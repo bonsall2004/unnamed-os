@@ -1,3 +1,4 @@
 ./binaries
 ./intermediate
 ./experiments
+*.img
