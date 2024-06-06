@@ -2,7 +2,7 @@
 setlocal
 
 set BINARIES_FOLDER=binaries
-set BOOTLOADER_FILE=%BINARIES_FOLDER%\bootloader.bin
+set BOOTLOADER_FILE=%BINARIES_FOLDER%\bootloader\stage1.bin
 set IMAGE_FILE=bootable_disk.img
 
 if not exist intermediate (

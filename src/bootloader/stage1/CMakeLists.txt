@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 3.15)
+
+project(Stage1 LANGUAGES NONE)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/binaries)
+set(SOURCE_NAME stage1)
+
+add_custom_command(
+    OUTPUT ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${SOURCE_NAME}.bin
+    COMMAND nasm -f bin -o ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${SOURCE_NAME}.bin ${CMAKE_CURRENT_SOURCE_DIR}/${SOURCE_NAME}.asm
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${SOURCE_NAME}.asm
+    COMMENT "Assembling Stage1 of the bootloader"
+    )
+
+add_custom_target(stage1_bin ALL DEPENDS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${SOURCE_NAME}.bin)

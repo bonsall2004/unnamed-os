@@ -1,0 +1,13 @@
+project(Stage2 LANGUAGES NONE)
+
+set(SOURCE_NAME stage2)
+
+add_custom_command(
+    OUTPUT ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${SOURCE_NAME}.bin
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+    COMMAND nasm -f bin -o ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${SOURCE_NAME}.bin ${CMAKE_CURRENT_SOURCE_DIR}/${SOURCE_NAME}.asm
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${SOURCE_NAME}.asm
+    COMMENT "Assembling Stage2 of the bootloader"
+    )
+
+add_custom_target(stage2_bin ALL DEPENDS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${SOURCE_NAME}.bin)
