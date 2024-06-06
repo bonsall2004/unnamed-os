@@ -14,13 +14,15 @@ print_string:
     lodsb
     cmp al, 0
     je .done
+    mov ah, 0xe
+    mov bh, 0
+    mov bl, 0x7
     int 0x10
     jmp .repeat
 .done:
     ret
 
-section .data
-    message db "Hello setolyx's server", 0
+message db "Hello setolyx's server", 0
 
 times 510 - ($ - $$) db 0
 dw 0xAA55
