@@ -2,3 +2,4 @@
 ./intermediate
 ./experiments
 *.img
+.idea
