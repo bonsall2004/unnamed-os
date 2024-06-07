@@ -17,3 +17,6 @@ typedef struct E820_ENTRY_
 #define MEMORY_MAP ((e820_entry_t*)0x70008)
 #define E820_LENGTH (*((uint32_t*)0x70000))
 
+void *memcpy(void *dest, const void *src, size_t n);
+void *memset(void *s, int c, size_t n);
+int memcmp(const void *s1, const void *s2, size_t n);

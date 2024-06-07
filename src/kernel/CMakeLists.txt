@@ -4,6 +4,7 @@ project(kernel LANGUAGES NONE)
 set(C_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/stdlib/stdio.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/stdlib/memory.c
     )
 
 set(ASM_SOURCES
@@ -60,5 +61,5 @@ add_custom_target(kernel ALL DEPENDS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/kernel.bi
 
 # dummy target for intellisense so it's not such a pathetic little bitch
 include_directories(./includes ${CMAKE_SOURCE_DIR}/includes)
-add_executable(dummy_target src/main.c src/stdlib/stdio.c)
+add_executable(dummy_target src/main.c src/stdlib/stdio.c src/stdlib/memory.c)
 target_compile_options(dummy_target PRIVATE -nostdlib -nostdinc)
