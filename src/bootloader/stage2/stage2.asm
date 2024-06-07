@@ -6,24 +6,18 @@ start:
   call check_cpuid
   call check_long_mode_compatibility
   call enter_long_mode
-; -------------------------------------------------------
+
 check_cpuid:
   pushfd
   pop eax
-
   mov ecx, eax
-
   xor eax, 1 << 21
-
   push eax
   popfd
-
   pushfd
   pop eax
-
   push ecx
   popfd
-
   xor eax, ecx
   jz .NoCPUID
   ret
@@ -31,7 +25,7 @@ check_cpuid:
   .NoCPUID:
     mov si, cpuid_failed_err
     call error
-; -------------------------------------------------------
+
 check_long_mode_compatibility:
   mov eax, 0x80000000
   cpuid
@@ -47,7 +41,7 @@ check_long_mode_compatibility:
   .NoLongMode:
     mov si, long_mode_unsupported_err
     call error
-; -------------------------------------------------------
+
 enter_long_mode:
   mov eax, cr0
   and eax, 01111111111111111111111111111111b
@@ -62,7 +56,6 @@ enter_long_mode:
   mov ecx, 4096
   rep stosd
   mov edi, cr3
-
 
   mov dword [edi], 0x2003
   add edi, 0x1000
@@ -80,8 +73,6 @@ enter_long_mode:
     add ebx, 0x1000
     loop .set_entry
 
-
-
   call check_pae_paging
 
   mov ecx, 0xC0000080
@@ -93,53 +84,46 @@ enter_long_mode:
   or eax, 1 << 31 | 1 << 0
   mov cr0, eax
 
-
-
   lgdt [gdt_descriptor]
-
-
 
   jmp 0x08:long_mode_entry
 
-; -------------------------------------------------------
 check_pae_paging:
   mov eax, cr4
   or eax, 1 << 5
   mov cr4, eax
   ret
-; -------------------------------------------------------
+
 print_string:
-    mov ah, 0x0E
+  mov ah, 0x0E
 .loop:
-    lodsb
-    or al, al
-    jz .done
-    int 0x10
-    jmp .loop
+  lodsb
+  or al, al
+  jz .done
+  int 0x10
+  jmp .loop
 .done:
-    ret
-; -------------------------------------------------------
+  ret
+
 error:
   call print_string
   hlt
 
   .err_loop:
     jmp .err_loop
-; -------------------------------------------------------
-
 
 gdt_start:
   gdt_null:
-      dq 0
+    dq 0x0000000000000000
   gdt_code:
-      dq 0x00af9b000000ffff
+    dq 0x00af9b000000ffff
   gdt_data:
-      dq 0x00af93000000ffff
+    dq 0x00af93000000ffff
 gdt_end:
 
 gdt_descriptor:
-    dw gdt_end - gdt_start - 1
-    dd gdt_start
+  dw gdt_end - gdt_start - 1
+  dd gdt_start
 
 [bits 64]
 long_mode_entry:
