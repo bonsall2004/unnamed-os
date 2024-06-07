@@ -42,7 +42,7 @@ gdt_end:
 gdt_descriptor:
     dw gdt_end - gdt_start - 1
     dd gdt_start
-bits 32
+
 long_mode_entry:
   mov ax, 0x10
   mov ds, ax
