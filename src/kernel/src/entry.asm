@@ -8,4 +8,4 @@ start:
   jmp initialize_kernel
 
 section .data
-    message db "Kernel Loaded", 0
+  message db "Kernel Loaded", 0
