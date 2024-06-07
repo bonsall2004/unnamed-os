@@ -51,7 +51,7 @@ long_mode_entry:
   mov gs, ax
   mov ss, ax
 
-  jmp 0x08:load_kernel
+  jmp 0x08:0x75000
 
 bits 64
 
@@ -59,3 +59,7 @@ bits 64
 
 kernel_entry:
   jmp 0x75000
+
+
+times 512-($-$$) db 0
+

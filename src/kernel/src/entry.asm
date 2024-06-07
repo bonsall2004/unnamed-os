@@ -1,7 +1,6 @@
 bits 64
-org 0x100000
 
-extern main
+extern initialize_kernel
 global _start
 _start:
-	jump main
+	jmp initialize_kernel

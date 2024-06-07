@@ -1,5 +1,5 @@
-void main()
+void initialize_kernel()
 {
 
-  return 0;
+  return;
 }
