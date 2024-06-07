@@ -6,11 +6,6 @@ start:
   call check_cpuid
   call check_long_mode_compatibility
   call enter_long_mode
-
-
-
-
-
 ; -------------------------------------------------------
 check_cpuid:
   pushfd
