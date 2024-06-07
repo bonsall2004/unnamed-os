@@ -1,10 +1,12 @@
 bits 16
 org 0x8000
-
-start:
+setvideomode:
   mov ax, 0x4F02  ; VESA Set Super VGA Mode
   mov bx, 0x118   
   int 0x10 
+  ret
+start:
+  call setvideomode
   cli
   lgdt [gdt_descriptor]
   mov eax, cr0
