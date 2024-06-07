@@ -1,47 +1,73 @@
 bits 16
 org 0x7C00
 
-cli
-xor ax, ax
-mov ss, ax
-mov sp, 0x7C00
-sti
+start:
+    cli
+    xor ax, ax
+    mov ss, ax
+    mov sp, 0x7C00
+    sti
 
-mov si, second_stage_msg
-call print_string
+    mov si, loading_msg
+    call print_string
 
-mov bx, 0x0000
-mov dh, 1
-mov dl, 0x80
+    mov bx, 0x0000
+    mov dh, 1
+    mov dl, 0x80
 
 load_stage2:
-  mov ah, 0x02
-  mov al, 0x01
-  mov ch, 0x00
-  mov cl, 0x02
-  int 0x13
-  jc disk_error
-  jmp 0x0000:0x8000
+    mov ax, 0x800
+    mov es, ax
+    xor bx, bx
+
+    mov ah, 0x02 ; BIOS function read sectors
+    mov al, 0x01 ; Sectors to read
+    mov ch, 0x00 ; Cylinder
+    mov cl, 0x02 ; Starting sector number of stage 2 on disk
+    mov dh, 0x00 ; Head number
+    mov dl, 0x80 ; Drive number (0x80 is the first)
+
+    int 0x13
+    jc disk_error
+
+    mov ax, 0x7500
+    mov es, ax
+    xor bx, bx
+    mov ah, 0x02 ; BIOS function read sectors
+    mov al, 0x10 ; Sectors to read
+    mov ch, 0x00 ; Cylinder
+    mov cl, 0x03 ; Starting sector number of stage 2 on disk
+    mov dh, 0x00 ; Head number
+    mov dl, 0x80 ; Drive number (0x80 is the first)
+
+
+    int 0x13
+    jc disk_error
+
+    mov si, loaded_msg
+    call print_string
+
+    jmp 0x0000:0x8000
 
 disk_error:
-  mov si, disk_error_msg
-  call print_string
-  hlt
+    mov si, disk_error_msg
+    call print_string
+    hlt
 
 print_string:
-  mov ah, 0x0E
-  .loop:
+    mov ah, 0x0E
+.loop:
     lodsb
     or al, al
     jz .done
     int 0x10
     jmp .loop
-  .done:
+.done:
     ret
 
-second_stage_msg db "Loading Stage2...", 0
+loading_msg db "Loading Stage2...", 0
+loaded_msg db "Loaded Stage2!!", 0
 disk_error_msg db "Disk Error", 0
 
 times 510-($-$$) db 0
 dw 0xAA55
-
