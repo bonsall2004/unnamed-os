@@ -1,3 +1,4 @@
+bits 64
 org 0x100000
 
 extern main
