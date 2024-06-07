@@ -4,7 +4,7 @@ void set_pixel(int x, int y, uint8_t color) {
   uint16_t offset = y * VGA_WIDTH + x;
   *(volatile uint8_t *)(VGA_ADDRESS + offset) = color;
 } // setpixles on screen
-__attribute__((used))
+
 void initialize_kernel()
 {
   int x,y =0,0;
