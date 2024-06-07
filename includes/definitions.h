@@ -7,7 +7,7 @@
 #define VGA_WIDTH 320
 #define VGA_HEIGHT 200
 #define VGA_ADDRESS 0xA0000
-
+#define NULL 0
 typedef signed char int8_t;
 typedef short int16_t;
 typedef int int32_t;
