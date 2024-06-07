@@ -20,7 +20,7 @@ jobs:
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}/intermediate/release/x86
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ../../../
 
     - name: Build with Ninja
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
