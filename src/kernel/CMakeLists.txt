@@ -37,7 +37,7 @@ foreach(C_FILE IN LISTS C_SOURCES)
   set(C_OBJECT ${INTERMEDIATE_DIR}/${C_NAME}.o)
   add_custom_command(
       OUTPUT ${C_OBJECT}
-      COMMAND gcc -ffreestanding -c -o ${C_OBJECT} ${C_FILE} -nostdlib
+      COMMAND gcc -mcmodel=large -ffreestanding -c -o ${C_OBJECT} ${C_FILE} -nostdlib -fno-asynchronous-unwind-tables -fno-unwind-tables
       DEPENDS ${C_FILE}
       COMMENT "Compiling ${C_FILE}"
       )
@@ -47,8 +47,8 @@ endforeach()
 # Link all objects into kernel.bin
 add_custom_command(
     OUTPUT ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/kernel.bin
-    COMMAND ld -o ${INTERMEDIATE_DIR}/kernel.elf  ${ASM_OBJECTS} ${C_OBJECTS}
-    COMMAND objcopy -O binary -j .text -j .data ${INTERMEDIATE_DIR}/kernel.elf ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/kernel.bin
+    COMMAND ld --nmagic -o ${INTERMEDIATE_DIR}/kernel.elf -T ${CMAKE_SOURCE_DIR}/src/linker_scripts/link-64-kernel.ld ${ASM_OBJECTS} ${C_OBJECTS}
+    COMMAND objcopy -O binary -j .init -j .text -j .rodata -j .data ${INTERMEDIATE_DIR}/kernel.elf ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/kernel.bin
     DEPENDS ${ASM_OBJECTS} ${C_OBJECTS}
     COMMENT "Linking kernel.bin"
     )

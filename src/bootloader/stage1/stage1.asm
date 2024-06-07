@@ -16,7 +16,7 @@ start:
     mov dl, 0x80
 
 load_stage2:
-    mov ax, 0x8000
+    mov ax, 0x800
     mov es, ax
     xor bx, bx
 
@@ -30,21 +30,23 @@ load_stage2:
     int 0x13
     jc disk_error
 
-    mov ax, 0x75000
+    mov ax, 0x7500
     mov es, ax
     xor bx, bx
-
     mov ah, 0x02 ; BIOS function read sectors
-    mov al, 0x01 ; Sectors to read
+    mov al, 0x10 ; Sectors to read
     mov ch, 0x00 ; Cylinder
     mov cl, 0x03 ; Starting sector number of stage 2 on disk
     mov dh, 0x00 ; Head number
     mov dl, 0x80 ; Drive number (0x80 is the first)
 
+
     int 0x13
     jc disk_error
+
     mov si, loaded_msg
     call print_string
+
     jmp 0x0000:0x8000
 
 disk_error:
@@ -61,12 +63,6 @@ print_string:
     int 0x10
     jmp .loop
 .done:
-    mov dl, 10
-    mov ah, 0x02
-    int 0x21
-    mov dl, 13
-    mov ah, 0x02
-    int 0x21
     ret
 
 loading_msg db "Loading Stage2...", 0
