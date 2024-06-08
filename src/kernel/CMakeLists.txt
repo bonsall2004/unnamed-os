@@ -7,6 +7,7 @@ set(C_SOURCES
     src/stdlib/memory.c
     src/stdlib/string.c
     src/stdlib/display.c
+    src/stdlib/font.c
     )
 
 set(CXX_SOURCES

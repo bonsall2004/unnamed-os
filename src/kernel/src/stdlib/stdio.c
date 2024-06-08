@@ -4,7 +4,9 @@
  * Description:
  */
 #include "stdbool.h"
+#include "display.h"
 #include <stdio.h>
+#include <stdarg.h>
 
 typedef struct TEXT_CELL_
 {
@@ -12,33 +14,189 @@ typedef struct TEXT_CELL_
   uint8_t color;
 } text_cell_t;
 
-static uint16_t character_offset = 0;
-static uint8_t line = 0;
+uint16_t cursor_pos_x = 6;
+uint16_t cursor_pos_y = 6;
 
-void putc_colour(char character, uint8_t color)
+void putc_colour(char character, color_t color)
 {
-  *((text_cell_t*)0xB8000 + character_offset++) = (text_cell_t){ .character=character, .color=color };
+  if(character == '\n')
+  {
+    cursor_pos_x = 6;
+    cursor_pos_y = cursor_pos_y + 12 > FRAME_BUFFER_HEIGHT ? 12 : cursor_pos_y + 12;
+    return;
+  }
+
+  if(cursor_pos_x + 8 > FRAME_BUFFER_WIDTH)
+  {
+    cursor_pos_x = 0;
+    cursor_pos_y += 12;
+  }
+  const uint8_t* cf = &fontdata[character * 8];
+  for (int y = 0; y < 8; y++) {
+    for (int x = 0; x < 8; x++) {
+      if ((cf[y] & (1 << (7 - x))) != 0) {
+        draw_pixel(cursor_pos_x + x, cursor_pos_y + y, color);
+      }
+    }
+  }
+  cursor_pos_x+=12;
 }
 
 void putc(char character)
 {
-  putc_colour(character, 0x0f);
+  putc_colour(character, RGB(0xFF, 0xFF,0xFF,0xff));
 }
 
-void puts(const char* message)
+void puts(const char* str)
 {
-  character_offset = line * 80;
-  for(int i = 0; message[i] != '\0'; i++)
+  while(*str)
   {
-    putc_colour(message[i], 0x0D);
+    putc(*str++);
   }
-  line++;
 }
 
-void clear_screen()
-{
-  for(uint16_t i = 0; i < 1920; i++)
-  {
-    putc(' ');
+void itoa(int value, char *str, int base) {
+  char *ptr = str, *ptr1 = str, tmp_char;
+  int tmp_value;
+
+  if (value < 0 && base == 10) {
+    value = -value;
+    *ptr++ = '-';
   }
+
+  tmp_value = value;
+
+  do {
+    int remainder = tmp_value % base;
+    *ptr++ = (remainder < 10) ? (remainder + '0') : (remainder - 10 + 'a');
+  } while (tmp_value /= base);
+
+  *ptr-- = '\0';
+
+  while (ptr1 < ptr) {
+    tmp_char = *ptr;
+    *ptr-- = *ptr1;
+    *ptr1++ = tmp_char;
+  }
+}
+
+void utoa(uintptr_t value, char *str, int base) {
+  char *ptr = str, *ptr1 = str, tmp_char;
+  uintptr_t tmp_value;
+
+  tmp_value = value;
+
+  do {
+    uintptr_t remainder = tmp_value % base;
+    *ptr++ = (remainder < 10) ? (remainder + '0') : (remainder - 10 + 'a');
+  } while (tmp_value /= base);
+
+  *ptr-- = '\0';
+
+  while (ptr1 < ptr) {
+    tmp_char = *ptr;
+    *ptr-- = *ptr1;
+    *ptr1++ = tmp_char;
+  }
+}
+
+
+void printf(const char *format, ...) {
+  va_list args;
+  va_start(args, format);
+
+  if(cursor_pos_y > FRAME_BUFFER_HEIGHT)
+  {
+    cursor_pos_y = 6;
+  }
+
+  const char *p = format;
+  while (*p) {
+    if (*p == '%') {
+      p++;
+      int width = 0;
+      while (*p >= '0' && *p <= '9') {
+        width = width * 10 + (*p - '0');
+        p++;
+      }
+
+      switch (*p) {
+      case 'c': {
+        char c = (char)va_arg(args, int);
+        putc(c);
+        break;
+      }
+      case 's': {
+        char *str = va_arg(args, char *);
+        puts(str);
+        break;
+      }
+      case 'd':
+      case 'i': {
+        int num = va_arg(args, int);
+        char str[12];  // Enough to hold a 32-bit int
+        itoa(num, str, 10);
+        puts(str);
+        break;
+      }
+      case 'u': {
+        unsigned int num = va_arg(args, unsigned int);
+        char str[12];  // Enough to hold a 32-bit unsigned int
+        utoa(num, str, 10);
+        puts(str);
+        break;
+      }
+      case 'x': {
+        unsigned int num = va_arg(args, unsigned int);
+        char str[9];  // Enough to hold a 32-bit hex number
+        utoa(num, str, 16);
+        puts(str);
+        break;
+      }
+      case 'X': {
+        unsigned int num = va_arg(args, unsigned int);
+        char str[9];  // Enough to hold a 32-bit hex number
+        utoa(num, str, 16);
+        for (char *s = str; *s; s++) {
+          if (*s >= 'a' && *s <= 'f') {
+            *s -= 32;  // Convert to uppercase
+          }
+        }
+        puts(str);
+        break;
+      }
+      case 'o': {
+        unsigned int num = va_arg(args, unsigned int);
+        char str[12];  // Enough to hold a 32-bit octal number
+        utoa(num, str, 8);
+        puts(str);
+        break;
+      }
+      case 'p': {
+        uintptr_t num = (uintptr_t)va_arg(args, void *);
+        char str[19];  // Enough to hold a pointer address
+        puts("0x");
+        utoa(num, str, 16);
+        puts(str);
+        break;
+      }
+      case '%': {
+        putc('%');
+        break;
+      }
+      default: {
+        putc('%');
+        putc(*p);
+        break;
+      }
+      }
+    } else {
+      putc(*p);
+    }
+    p++;
+  }
+
+  va_end(args);
+  cursor_pos_x = 6;
+  cursor_pos_y += 12;
 }

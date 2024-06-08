@@ -14,5 +14,8 @@ typedef unsigned long int uint32_t;
 typedef signed long long int int64_t;
 typedef unsigned long long int uint64_t;
 
+
+typedef unsigned long long int uintptr_t;
+typedef signed long long int intptr_t;
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define max(a, b) ((a) > (b) ? (a) : (b))
