@@ -9,6 +9,10 @@ set(C_SOURCES
     src/stdlib/display.c
     )
 
+set(CXX_SOURCES
+    
+    )
+
 set(CMAKE_C_LINKER ld)
 set(CMAKE_CXX_LINKER ld)
 

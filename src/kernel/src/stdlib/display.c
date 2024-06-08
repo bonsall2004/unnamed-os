@@ -23,9 +23,9 @@ static volatile LIMINE_REQUESTS_END_MARKER
 color_t RGB(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
   color_t color;
-  color.rgb[0] = r;
+  color.rgb[2] = r;
   color.rgb[1] = g;
-  color.rgb[2] = b;
+  color.rgb[0] = b;
   color.rgb[3] = a;
   return color;
 }

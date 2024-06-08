@@ -5,6 +5,14 @@
  */
 #include <stddef.h>
 #include <memory.h>
+#include <limine.h>
+#include "display.h"
+
+__attribute__((used, section(".requests")))
+static volatile struct limine_memmap_request memmap_request = {
+  .id = LIMINE_MEMMAP_REQUEST,
+  .revision = 0, .response = NULL
+};
 
 void *memcpy(void *dest, const void *src, size_t n) {
   __asm__ volatile (
@@ -35,3 +43,84 @@ int memcmp(const void *s1, const void *s2, size_t n) {
   }
   return 0;
 }
+
+
+typedef struct MemoryBlock
+{
+  size_t size;
+  size_t free;
+  struct MemoryBlock* next;
+} MemoryBlock;
+
+static MemoryBlock* free_list;
+
+void init_allocator()
+{
+  struct limine_memmap_entry** mmap = memmap_request.response->entries;
+  size_t mmap_entries = memmap_request.response->entry_count;
+
+  free_list = NULL;
+
+  for(size_t i = 0; i < mmap_entries; i++)
+  {
+    if(mmap[i]->type == LIMINE_MEMMAP_USABLE)
+    {
+      MemoryBlock* block = (MemoryBlock*)(size_t*)(mmap[i]->base+0xFFFF800000000000);
+      block->size = mmap[i]->length;
+      block->free = 1;
+      block->next = free_list;
+      free_list = block;
+      fill_frame_buffer(RGB(0xff, 0x00, 0x00,0xff));
+    }
+  }
+}
+
+void* malloc(size_t size){
+  MemoryBlock* current = free_list;
+  while(current != NULL)
+  {
+    if(current->free && current->size >= size)
+    {
+      if(current->size > size + sizeof(MemoryBlock))
+      {
+        MemoryBlock* new_block = (void*)((char*)current+sizeof(MemoryBlock)+size);
+        new_block->size = current->size - size - sizeof(MemoryBlock);
+        new_block->free = 1;
+        new_block->next = current->next;
+        current->size = size;
+        current->next = new_block;
+      }
+      current->free = 0;
+      return (void*)((char*)current + sizeof(MemoryBlock));
+    }
+    current = current->next;
+  }
+  return NULL;
+}
+
+void free(void* ptr)
+{
+  if(!ptr) return;
+
+  MemoryBlock* block = (MemoryBlock*)((char*)ptr - sizeof(MemoryBlock));
+  block->free = 1;
+
+  if(block->next && block->next->free)
+  {
+    block->size += block->next->size + sizeof(MemoryBlock);
+    block->next = block->next->next;
+  }
+
+  MemoryBlock* current = free_list;
+  while(current && current->next != block)
+  {
+    current = current->next;
+  }
+
+  if(current && current->free)
+  {
+    current->size += block->size + sizeof(MemoryBlock);
+    current->next = block->next;
+  }
+}
+
