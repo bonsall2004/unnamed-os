@@ -32,8 +32,8 @@ color_t RGB(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 
 void draw_pixel(uint16_t x, uint16_t y, color_t color)
 {
-  void* framebuffer = framebuffer_request.response->framebuffers[0]->address;
-  color_t* row = framebuffer + framebuffer_request.response->framebuffers[0]->pitch * y;
+  auto* framebuffer = static_cast<uint8_t*>(framebuffer_request.response->framebuffers[0]->address);
+  auto* row = reinterpret_cast<color_t*>(framebuffer + framebuffer_request.response->framebuffers[0]->pitch * y);
   row[x] = color;
 }
 

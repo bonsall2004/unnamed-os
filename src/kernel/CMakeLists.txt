@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 3.5)
-project(kernel LANGUAGES C ASM)
+project(kernel LANGUAGES CXX ASM)
 
 set(C_SOURCES
-    src/main.c
-    src/stdlib/stdio.c
-    src/stdlib/memory.c
-    src/stdlib/string.c
-    src/stdlib/display.c
-    src/stdlib/font.c
-    src/stdlib/disk.c
-    src/drivers/ATA.c
+    src/main.cpp
+    src/stdlib/stdio.cpp
+    src/stdlib/memory.cpp
+    src/stdlib/string.cpp
+    src/stdlib/display.cpp
+    src/stdlib/font.cpp
+    src/stdlib/disk.cpp
+    src/drivers/ATA.cpp
     )
 
 set(ASM_SOURCES

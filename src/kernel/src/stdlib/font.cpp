@@ -9,8 +9,8 @@
  * Description:
  */
 #pragma once
-#include <stdint.h>
-#include <stdio.h>
+#include <cstdint>
+#include <cstdio>
 
 const uint8_t fontdata[] = {
     /* 0 0x00 '^@' */

@@ -4,8 +4,8 @@
  * Description:
  */
 #pragma once
-#include <stdint.h>
-#include <stddef.h>
+#include <cstdint>
+#include <cstddef>
 
 typedef struct E820_ENTRY_
 {
@@ -24,3 +24,6 @@ int memcmp(const void *s1, const void *s2, size_t n);
 void init_allocator();
 void* malloc(size_t size);
 void free(void* ptr);
+
+void* operator new(size_t size);
+void operator delete(void* ptr) noexcept;

@@ -4,8 +4,8 @@
  * Description:
  */
 #pragma once
-#include "stdint.h"
-#include "limine.h"
+#include <cstdint>
+#include <limine.h>
 
 #define FRAME_BUFFER_HEIGHT framebuffer_request.response->framebuffers[0]->height
 #define FRAME_BUFFER_WIDTH framebuffer_request.response->framebuffers[0]->width

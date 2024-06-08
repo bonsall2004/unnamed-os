@@ -5,7 +5,6 @@
  */
 #pragma once
 
-#define NULL ((void *)0)
 #define offsetof(t, d) __builtin_offsetof(t, d)
 
-typedef unsigned long long int size_t;
+typedef __SIZE_TYPE__ size_t;

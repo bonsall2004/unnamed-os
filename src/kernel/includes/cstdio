@@ -4,7 +4,7 @@
  * Description:
  */
 #pragma once
-#include "stdint.h"
+#include <cstdint>
 #include <display.h>
 
 void putc_colour(char character, color_t color);

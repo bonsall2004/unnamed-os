@@ -3,14 +3,14 @@
  * Author: bonsall2004
  * Description: 
  */
-#include <stddef.h>
-#include <string.h>
+#include <cstddef>
+#include <cstring>
 
 const char* strchr(const char* str, char chr)
 {
-  if(str == NULL)
+  if(str == nullptr)
   {
-    return NULL;
+    return nullptr;
   }
 
   while(*str)
@@ -23,7 +23,7 @@ const char* strchr(const char* str, char chr)
     ++str;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 
@@ -31,12 +31,12 @@ char* strcpy(char* dst, const char* src)
 {
   char* orig_dest = dst;
 
-  if(dst == NULL)
+  if(dst == nullptr)
   {
-    return NULL;
+    return nullptr;
   }
 
-  if(src == NULL)
+  if(src == nullptr)
   {
     *dst = '\0';
     return dst;

@@ -1,12 +1,11 @@
-#include <stdbool.h>
-#include <stdio.h>
+#include <cstdio>
 #include <display.h>
-#include <memory.h>
-#include "stddef.h"
+#include <memory>
+#include "cstddef"
 #include "k_entry.h"
 
 
-_Noreturn __attribute__((used))
+__attribute__((used))
 void _start()
 {
   init_allocator();

@@ -3,15 +3,15 @@
  * Author: bonsall2004
  * Description: 
  */
-#include <stddef.h>
-#include <memory.h>
+#include <cstddef>
+#include <memory>
 #include <limine.h>
 #include "display.h"
 
 __attribute__((used, section(".requests")))
 static volatile struct limine_memmap_request memmap_request = {
   .id = LIMINE_MEMMAP_REQUEST,
-  .revision = 0, .response = NULL
+  .revision = 0, .response = nullptr
 };
 
 void *memcpy(void *dest, const void *src, size_t n) {
@@ -44,7 +44,6 @@ int memcmp(const void *s1, const void *s2, size_t n) {
   return 0;
 }
 
-
 typedef struct MemoryBlock
 {
   size_t size;
@@ -59,7 +58,7 @@ void init_allocator()
   struct limine_memmap_entry** mmap = memmap_request.response->entries;
   size_t mmap_entries = memmap_request.response->entry_count;
 
-  free_list = NULL;
+  free_list = nullptr;
 
   for(size_t i = 0; i < mmap_entries; i++)
   {
@@ -77,13 +76,13 @@ void init_allocator()
 
 void* malloc(size_t size){
   MemoryBlock* current = free_list;
-  while(current != NULL)
+  while(current != nullptr)
   {
     if(current->free && current->size >= size)
     {
       if(current->size > size + sizeof(MemoryBlock))
       {
-        MemoryBlock* new_block = (void*)((char*)current+sizeof(MemoryBlock)+size);
+        auto* new_block = static_cast<MemoryBlock*>((void*)((char*)current + sizeof(MemoryBlock) + size));
         new_block->size = current->size - size - sizeof(MemoryBlock);
         new_block->free = 1;
         new_block->next = current->next;
@@ -95,14 +94,14 @@ void* malloc(size_t size){
     }
     current = current->next;
   }
-  return NULL;
+  return nullptr;
 }
 
 void free(void* ptr)
 {
   if(!ptr) return;
 
-  MemoryBlock* block = (MemoryBlock*)((char*)ptr - sizeof(MemoryBlock));
+  auto* block = (MemoryBlock*)((char*)ptr - sizeof(MemoryBlock));
   block->free = 1;
 
   if(block->next && block->next->free)
@@ -124,3 +123,11 @@ void free(void* ptr)
   }
 }
 
+void* operator new(size_t size)
+{
+  return malloc(size);
+}
+
+void operator delete(void* ptr) noexcept{
+ free(ptr);
+}

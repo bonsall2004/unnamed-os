@@ -3,23 +3,16 @@
  * Author: bonsall2004
  * Description:
  */
-#include "stdbool.h"
 #include "display.h"
-#include <stdio.h>
-#include <stdarg.h>
-
-typedef struct TEXT_CELL_
-{
-  uint8_t character;
-  uint8_t color;
-} text_cell_t;
+#include <cstdio>
+#include <cstdarg>
 
 uint16_t cursor_pos_x = 6;
 uint16_t cursor_pos_y = 6;
 
 void putc_colour(char character, color_t color)
 {
-  if(character == '\n')
+  if(character == '\n' || character == '\r')
   {
     cursor_pos_x = 6;
     cursor_pos_y = cursor_pos_y + 12 > FRAME_BUFFER_HEIGHT ? 12 : cursor_pos_y + 12;
@@ -119,7 +112,6 @@ void printf(const char *format, ...) {
         width = width * 10 + (*p - '0');
         p++;
       }
-
       switch (*p) {
       case 'c': {
         char c = (char)va_arg(args, int);
@@ -195,7 +187,6 @@ void printf(const char *format, ...) {
     }
     p++;
   }
-
   va_end(args);
   cursor_pos_x = 6;
   cursor_pos_y += 12;
