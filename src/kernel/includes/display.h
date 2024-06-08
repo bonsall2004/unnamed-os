@@ -8,6 +8,6 @@
 
 #define VGA_WIDTH 480
 #define VGA_HEIGHT 360
-#define VGA_ADDRESS 0xA0000
+#define VGA_ADDRESS 0xA0000ull
 
 void set_pixel(int x, int y, uint8_t color);

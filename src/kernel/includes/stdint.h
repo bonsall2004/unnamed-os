@@ -1,3 +1,8 @@
+/*
+ * custom_os
+ * Author: bonsall2004
+ * Description:
+ */
 #pragma once
 
 typedef signed char int8_t;
@@ -8,8 +13,6 @@ typedef signed long int int32_t;
 typedef unsigned long int uint32_t;
 typedef signed long long int int64_t;
 typedef unsigned long long int uint64_t;
-typedef uint64_t size_t;
 
-#define NULL ((void *)0)
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define max(a, b) ((a) > (b) ? (a) : (b))

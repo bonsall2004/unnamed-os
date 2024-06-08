@@ -5,6 +5,7 @@
  */
 #pragma once
 #include <stdint.h>
+#include <stddef.h>
 
 typedef struct E820_ENTRY_
 {

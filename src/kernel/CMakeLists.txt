@@ -2,9 +2,11 @@ cmake_minimum_required(VERSION 3.5)
 project(kernel LANGUAGES NONE)
 
 set(C_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/stdlib/stdio.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/stdlib/memory.c
+    src/main.c
+    src/stdlib/stdio.c
+    src/stdlib/memory.c
+    src/stdlib/string.c
+    src/stdlib/display.c
     )
 
 set(ASM_SOURCES
@@ -39,7 +41,7 @@ foreach(C_FILE IN LISTS C_SOURCES)
   set(C_OBJECT ${INTERMEDIATE_DIR}/${C_NAME}.o)
   add_custom_command(
       OUTPUT ${C_OBJECT}
-      COMMAND gcc -g -fno-builtin -mcmodel=small -shared -fpie -ffreestanding -c -o ${C_OBJECT} ${C_FILE} -nostdlib -fno-asynchronous-unwind-tables -fno-unwind-tables -I ${CMAKE_CURRENT_SOURCE_DIR}/includes -I ${CMAKE_SOURCE_DIR}/includes
+      COMMAND gcc -g -fno-builtin -mcmodel=small -shared -fpie -ffreestanding -c -o ${C_OBJECT} ${CMAKE_CURRENT_SOURCE_DIR}/${C_FILE} -nostdlib -fno-asynchronous-unwind-tables -fno-unwind-tables -I ${CMAKE_CURRENT_SOURCE_DIR}/includes -I ${CMAKE_SOURCE_DIR}/includes
       DEPENDS ${C_FILE}
       COMMENT "Compiling ${C_FILE}"
       )
@@ -61,5 +63,5 @@ add_custom_target(kernel ALL DEPENDS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/kernel.bi
 
 # dummy target for intellisense so it's not such a pathetic little bitch
 include_directories(./includes ${CMAKE_SOURCE_DIR}/includes)
-add_executable(dummy_target src/main.c src/stdlib/stdio.c src/stdlib/memory.c)
+add_executable(dummy_target ${C_SOURCES} ./includes/string.h)
 target_compile_options(dummy_target PRIVATE -nostdlib -nostdinc)

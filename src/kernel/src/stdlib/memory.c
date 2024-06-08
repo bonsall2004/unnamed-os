@@ -4,9 +4,9 @@
  * Description: 
  */
 #include <memory.h>
+#include <stddef.h>
 
 void *memcpy(void *dest, const void *src, size_t n) {
-  // Inline assembly for x86_64 using the `rep movsb` instruction
   __asm__ volatile (
     "rep movsb"
     : "=D" (dest), "=S" (src), "=c" (n)
