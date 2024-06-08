@@ -3,8 +3,8 @@
  * Author: bonsall2004
  * Description:
  */
-#include <stdio.h>
 #include "stdbool.h"
+#include <stdio.h>
 
 typedef struct TEXT_CELL_
 {

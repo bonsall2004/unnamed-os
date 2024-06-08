@@ -3,8 +3,8 @@
  * Author: bonsall2004
  * Description: 
  */
-#include <memory.h>
 #include <stddef.h>
+#include <memory.h>
 
 void *memcpy(void *dest, const void *src, size_t n) {
   __asm__ volatile (
