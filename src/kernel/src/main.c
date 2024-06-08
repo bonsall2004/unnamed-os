@@ -1,5 +1,12 @@
-void initialize_kernel()
-{
+#include <stdbool.h>
+#include <stdio.h>
 
-  return;
+_Noreturn __attribute__((used))
+
+void _start()
+{
+  while(true)
+  {
+
+  }
 }
