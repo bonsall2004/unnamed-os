@@ -1,15 +1,9 @@
-static inline void outb(uint16_t port, uint8_t val) {
-    __asm__ __volatile__ ("outb %0, %1" : : "a"(val), "Nd"(port));
-}
+#include <stdint.h>
 
-static inline uint8_t inb(uint16_t port) {
-    uint8_t ret;
-    __asm__ __volatile__ ("inb %1, %0" : "=a"(ret) : "Nd"(port));
-    return ret;
-}
+#define ATA_PRIMARY_IO_BASE 0x1F0
+#define ATA_PRIMARY_CONTROL_BASE 0x3F6
+#define ATA_SECTOR_SIZE 512
 
-static inline uint16_t inw(uint16_t port) {
-    uint16_t ret;
-    __asm__ __volatile__ ("inw %1, %0" : "=a"(ret) : "Nd"(port));
-    return ret;
-}
+// Function prototypes
+void ata_init(void);
+void ata_read_sector(uint32_t lba, uint8_t *buffer);
