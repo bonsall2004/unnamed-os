@@ -15,5 +15,7 @@ set(CMAKE_CXX_LINKER ld)
 add_executable(kernel ${C_SOURCES})
 
 target_include_directories(kernel PRIVATE ./includes)
+
+
 target_compile_options(kernel PRIVATE -fno-builtin  -ffreestanding  -fno-stack-protector -fno-stack-check -fpie -mno-red-zone -nostdlib -nostdinc )
 target_link_options(kernel PRIVATE -nostdlib -z max-page-size=0x1000 -pie -T ${CMAKE_SOURCE_DIR}/src/linker_scripts/link-64-kernel.ld)
