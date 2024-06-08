@@ -14,4 +14,5 @@ typedef struct
   uint16_t unallocated_block_count;
   uint16_t unallocated_inode_count;
   uint16_t directory_count;
+  uint16_t reserved;
 } ext_block_group_descriptor;
