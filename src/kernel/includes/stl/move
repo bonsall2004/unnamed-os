@@ -1,0 +1,10 @@
+#include <cstdint>
+#include <cstdef>
+
+namespace stl
+{  
+  template<typename T>
+  T&& move(T&& arg) noexcept {
+    return static_cast<T&&>(arg);
+  }
+}
