@@ -26,7 +26,6 @@ const char* strchr(const char* str, char chr)
   return nullptr;
 }
 
-
 char* strcpy(char* dst, const char* src)
 {
   char* orig_dest = dst;
@@ -52,7 +51,6 @@ char* strcpy(char* dst, const char* src)
   *dst = '\0';
   return orig_dest;
 }
-
 
 size_t strlen(const char* str)
 {

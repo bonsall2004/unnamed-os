@@ -14,7 +14,8 @@
 
 extern volatile struct limine_framebuffer_request framebuffer_request;
 
-typedef struct color {
+typedef struct color
+{
   uint8_t rgb[4];
 } color_t;
 

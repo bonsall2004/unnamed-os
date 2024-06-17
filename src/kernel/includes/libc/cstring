@@ -4,7 +4,6 @@
  * Description:
  */
 #pragma once
-#include <cstdint>
 #include <cstddef>
 
 const char* strchr(const char* str, char chr);
