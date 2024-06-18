@@ -4,9 +4,12 @@
 #include <k_entry.h>
 #include <idt.h>
 #include <pair>
+#include <function>
 #include <vector>
 #include <scheduling/TaskScheduler.h>
 #include <srand>
+#include <unique_ptr>
+#include "shared_ptr"
 
 void kernel_main();
 
@@ -18,6 +21,8 @@ void _start()
 }
 }
 
+int testf(int a, int b) { return a+b; }
+
 void kernel_main()
 {
   init_idt();
@@ -25,7 +30,13 @@ void kernel_main()
   init_task_scheduler();
   std::srand(100);
   auto* test = (color_t*)malloc(sizeof(color_t));
-  *test = RGB(std::rand(1, 255), std::rand(1, 255), std::rand(1, 255),std::rand(1, 255));
+  std::function<int(int, int)> testFunc = testf;
+  testFunc = [](int a, int b){ return a - b; };
+  *test = RGB(0, 0, testFunc(100, 155),std::rand(1, 255));
+
+
+  int(*test1)(int, int) = [](int a, int b) {return a + b;};
+
 
   fill_frame_buffer(*test);
   free(test);

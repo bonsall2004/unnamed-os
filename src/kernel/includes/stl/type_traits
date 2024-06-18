@@ -1,13 +1,13 @@
 /*
  * custom_os
  * Author: bonsall2004
- * Description: 
+ * Description: Custom implementation of type traits
  */
 #pragma once
 
 namespace std
 {
-  // std::remove_reference
+  // remove_reference
   template <typename T>
   struct remove_reference
   {
@@ -26,7 +26,53 @@ namespace std
     typedef T type;
   };
 
-  // std::is_lvalue_reference
+  // add_const
+  template <typename T>
+  struct add_const
+  {
+    typedef const T type;
+  };
+
+  // remove_const
+  template <typename T>
+  struct remove_const
+  {
+    typedef T type;
+  };
+
+  template <typename T>
+  struct remove_const<const T>
+  {
+    typedef T type;
+  };
+
+  // add_lvalue_reference
+  template <typename T>
+  struct add_lvalue_reference
+  {
+    typedef T& type;
+  };
+
+  template <>
+  struct add_lvalue_reference<void>
+  {
+    typedef void type;
+  };
+
+  // add_rvalue_reference
+  template <typename T>
+  struct add_rvalue_reference
+  {
+    typedef T&& type;
+  };
+
+  template <>
+  struct add_rvalue_reference<void>
+  {
+    typedef void type;
+  };
+
+  // is_lvalue_reference
   template <typename T>
   struct is_lvalue_reference
   {
@@ -38,4 +84,167 @@ namespace std
   {
     static constexpr bool value = true;
   };
-}
+
+  // is_rvalue_reference
+  template <typename T>
+  struct is_rvalue_reference
+  {
+    static constexpr bool value = false;
+  };
+
+  template <typename T>
+  struct is_rvalue_reference<T&&>
+  {
+    static constexpr bool value = true;
+  };
+
+  // is_const
+  template <typename T>
+  struct is_const
+  {
+    static constexpr bool value = false;
+  };
+
+  template <typename T>
+  struct is_const<const T>
+  {
+    static constexpr bool value = true;
+  };
+
+  // is_reference
+  template <typename T>
+  struct is_reference
+  {
+    static constexpr bool value = false;
+  };
+
+  template <typename T>
+  struct is_reference<T&>
+  {
+    static constexpr bool value = true;
+  };
+
+  template <typename T>
+  struct is_reference<T&&>
+  {
+    static constexpr bool value = true;
+  };
+
+  // is_same
+  template <typename T, typename U>
+  struct is_same
+  {
+    static constexpr bool value = false;
+  };
+
+  template <typename T>
+  struct is_same<T, T>
+  {
+    static constexpr bool value = true;
+  };
+
+  // conditional
+  template <bool B, typename T, typename F>
+  struct conditional
+  {
+    typedef T type;
+  };
+
+  template <typename T, typename F>
+  struct conditional<false, T, F>
+  {
+    typedef F type;
+  };
+
+  // enable_if
+  template <bool B, typename T = void>
+  struct enable_if
+  {
+  };
+
+  template <typename T>
+  struct enable_if<true, T>
+  {
+    typedef T type;
+  };
+
+  // integral_constant
+  template <typename T, T v>
+  struct integral_constant
+  {
+    static constexpr T value = v;
+    typedef T value_type;
+    typedef integral_constant<T, v> type;
+
+    constexpr operator value_type() const noexcept { return value; }
+    constexpr value_type operator()() const noexcept { return value; }
+  };
+
+  template <bool B>
+  using bool_constant = integral_constant<bool, B>;
+
+  typedef bool_constant<true> true_type;
+  typedef bool_constant<false> false_type;
+
+
+  // remove_volatile
+  template <typename T>
+  struct remove_volatile
+  {
+    typedef T type;
+  };
+
+  template <typename T>
+  struct remove_volatile<volatile T>
+  {
+    typedef T type;
+  };
+
+  // remove_cv
+  template <typename T>
+  struct remove_cv
+  {
+    typedef typename std::remove_const<typename std::remove_volatile<T>::type>::type type;
+  };
+
+  // remove_cv
+  template <typename T>
+  using remove_cv_t = typename remove_cv<T>::type;
+
+  // remove_reference_t
+  template <typename T>
+  using remove_reference_t = typename remove_reference<T>::type;
+
+  // add_lvalue_reference_t
+  template <typename T>
+  using add_lvalue_reference_t = typename add_lvalue_reference<T>::type;
+
+  // add_rvalue_reference_t
+  template <typename T>
+  using add_rvalue_reference_t = typename add_rvalue_reference<T>::type;
+
+  // is_lvalue_reference_v
+  template <typename T>
+  constexpr bool is_lvalue_reference_v = is_lvalue_reference<T>::value;
+
+  // is_rvalue_reference_v
+  template <typename T>
+  constexpr bool is_rvalue_reference_v = is_rvalue_reference<T>::value;
+
+  // is_const_v
+  template <typename T>
+  constexpr bool is_const_v = is_const<T>::value;
+
+  // is_reference_v
+  template <typename T>
+  constexpr bool is_reference_v = is_reference<T>::value;
+
+  // is_same_v
+  template <typename T, typename U>
+  constexpr bool is_same_v = is_same<T, U>::value;
+
+  // enable_if_t
+  template <bool B, typename T = void>
+  using enable_if_t = typename enable_if<B, T>::type;
+
+} // namespace std
