@@ -1,0 +1,36 @@
+#pragma once
+
+
+//fuck me why
+template <typename T>
+class Atomic {
+private:
+  volatile T value;
+
+public:
+  explicit Atomic(T initial = T()) : value(initial) {}
+
+  T load() const {
+    return __atomic_load_n(&value, __ATOMIC_SEQ_CST);
+  }
+
+  void store(T newValue) {
+    __atomic_store_n(&value, newValue, __ATOMIC_SEQ_CST);
+  }
+
+  T exchange(T newValue) {
+    return __atomic_exchange_n(&value, newValue, __ATOMIC_SEQ_CST);
+  }
+
+  bool compare_exchange(T& expected, T desired) {
+    return __atomic_compare_exchange_n(&value, &expected, desired, false, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST);
+  }
+
+  T fetch_add(T increment) {
+    return __atomic_fetch_add(&value, increment, __ATOMIC_SEQ_CST);
+  }
+
+  T fetch_sub(T decrement) {
+    return __atomic_fetch_sub(&value, decrement, __ATOMIC_SEQ_CST);
+  }
+};
