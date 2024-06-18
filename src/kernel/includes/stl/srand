@@ -1,0 +1,58 @@
+/*
+ * custom_os
+ * Author: bonsall2004
+ * Description: 
+ */
+#pragma once
+
+#include <cstdint>
+
+#pragma once
+#include <cstdint>
+
+namespace std
+{
+  class Random
+  {
+    public:
+      static void srand(unsigned int seed)
+      {
+        _seed = seed;
+      }
+
+      static int rand()
+      {
+        _seed = _seed * 1103515245 + 12345;
+        return (_seed / 65536) % 32768;
+      }
+
+      static int rand(int min, int max)
+      {
+        if (min > max)
+        {
+          return 0;
+        }
+        return min + rand() % (max - min + 1);
+      }
+
+    private:
+      static unsigned int _seed;
+  };
+
+  unsigned int Random::_seed = 1;
+
+  inline void srand(unsigned int seed)
+  {
+    Random::srand(seed);
+  }
+
+  inline int rand()
+  {
+    return Random::rand();
+  }
+
+  inline int rand(int min, int max)
+  {
+    return Random::rand(min, max);
+  }
+}
