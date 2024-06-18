@@ -4,10 +4,6 @@
  * Description: 
  */
 #pragma once
-
-#include <cstdint>
-
-#pragma once
 #include <cstdint>
 
 namespace std
