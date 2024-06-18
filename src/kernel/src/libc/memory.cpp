@@ -76,7 +76,7 @@ void init_allocator()
   }
 }
 
-void* malloc(size_t size)
+[[nodiscard]] void* malloc(size_t size)
 {
   MemoryBlock* current = free_list;
   while(current != nullptr)
