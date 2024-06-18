@@ -13,7 +13,9 @@ namespace std
   class vector
   {
     public:
-      vector() : data(nullptr), _size(0), _capacity(0) {}
+      vector() : data(nullptr), _size(0), _capacity(0)
+      {
+      }
       ~vector()
       {
         if(data)

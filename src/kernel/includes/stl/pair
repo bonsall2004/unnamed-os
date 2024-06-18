@@ -1,45 +1,57 @@
 #pragma once
 #include <utility>
 
-namespace std{
+namespace std
+{
 
-template <typename T1, typename T2>
-class pair {
-public:
-    constexpr pair() noexcept : first(), second() {}
+  template <typename T1, typename T2>
+  class pair
+  {
+    public:
+      constexpr pair() noexcept : first(), second()
+      {
+      }
 
-    constexpr pair(const T1& firstValue, const T2& secondValue) 
-        : first(firstValue), second(secondValue) {}
+      constexpr pair(const T1& firstValue, const T2& secondValue) : first(firstValue), second(secondValue)
+      {
+      }
 
-    constexpr pair(T1&& firstValue, T2&& secondValue) noexcept
-        : first(std::move(firstValue)), second(std::move(secondValue)) {}
+      constexpr pair(T1&& firstValue, T2&& secondValue) noexcept : first(std::move(firstValue)), second(std::move(secondValue))
+      {
+      }
 
-    constexpr pair(const pair& other) 
-        : first(other.first), second(other.second) {}
+      constexpr pair(const pair& other) : first(other.first), second(other.second)
+      {
+      }
 
-    constexpr pair(pair&& other) noexcept 
-        : first(std::move(other.first)), second(std::move(other.second)) {}
+      constexpr pair(pair&& other) noexcept : first(std::move(other.first)), second(std::move(other.second))
+      {
+      }
 
-    pair& operator=(const pair& other) {
-        if (this != &other) {
-            first = other.first;
-            second = other.second;
+      pair& operator=(const pair& other)
+      {
+        if(this != &other)
+        {
+          first = other.first;
+          second = other.second;
         }
         return *this;
-    }
+      }
 
-    pair& operator=(pair&& other) noexcept {
-        if (this != &other) {
-            first = std::move(other.first);
-            second = std::move(other.second);
+      pair& operator=(pair&& other) noexcept
+      {
+        if(this != &other)
+        {
+          first = std::move(other.first);
+          second = std::move(other.second);
         }
         return *this;
-    }
+      }
 
-    ~pair() = default;
+      ~pair() = default;
 
-    T1 first;
-    T2 second;
-};
+      T1 first;
+      T2 second;
+  };
 
 } // namespace stl
