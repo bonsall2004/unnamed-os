@@ -2,6 +2,7 @@
 
 
 //fuck me why
+namespace stl{
 template <typename T>
 class Atomic {
 private:
@@ -34,3 +35,4 @@ public:
     return __atomic_fetch_sub(&value, decrement, __ATOMIC_SEQ_CST);
   }
 };
+}
