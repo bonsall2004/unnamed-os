@@ -2,7 +2,7 @@
 
 
 //fuck me why
-namespace stl{
+namespace std{
 template <typename T>
 class Atomic {
 private:
