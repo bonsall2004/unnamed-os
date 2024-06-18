@@ -3,7 +3,7 @@
  * Author: bonsall2004
  * Description: 
  */
-#include <drivers/ATA.h>
+#include <ATA.h>
 
 void outb(uint16_t port, uint8_t val)
 {
@@ -33,56 +33,71 @@ void io_wait(void)
   __asm__ volatile ("outb %%al, $0x80" : : "a"(0));
 }
 
-void ata_wait_busy(uint16_t base) {
-  while (inb(base + 7) & ATA_SR_BSY);
+void ata_wait_busy(uint16_t base)
+{
+  while(inb(base + 7) & ATA_SR_BSY);
 }
 
-void ata_wait_drq(uint16_t base) {
-  while (!(inb(base + 7) & ATA_SR_DRQ));
+void ata_wait_drq(uint16_t base)
+{
+  while(!(inb(base + 7) & ATA_SR_DRQ));
 }
 
-void ata_select_device(uint16_t base, uint8_t slave) {
+void ata_select_device(uint16_t base, uint8_t slave)
+{
   outb(base + 6, 0xA0 | (slave << 4));
   io_wait();
 }
 
-int ata_identify(uint16_t base, uint8_t slave, struct ata_device *dev) {
+int ata_identify(uint16_t base, uint8_t slave, struct ata_device* dev)
+{
   ata_select_device(base, slave);
   ata_wait_busy(base);
 
   outb(base + 7, ATA_CMD_IDENTIFY);
   io_wait();
 
-  if (inb(base + 7) == 0) return 0;  // No device
+  if(inb(base + 7) == 0) return 0;  // No device
 
   ata_wait_busy(base);
   ata_wait_drq(base);
 
-  for (int i = 0; i < 256; i++) {
+  for(int i = 0; i < 256; i++)
+  {
     ((uint16_t*)dev)[i] = inw(base);
   }
 
   return 1;
 }
 
-void ata_initialize(struct ata_device *dev) {
-  if (ata_identify(ATA_PRIMARY_IO, ATA_DEV_MASTER, dev)) {
+void ata_initialize(struct ata_device* dev)
+{
+  if(ata_identify(ATA_PRIMARY_IO, ATA_DEV_MASTER, dev))
+  {
     dev->base = ATA_PRIMARY_IO;
     dev->ctrl = ATA_PRIMARY_CTRL;
     dev->slave = ATA_DEV_MASTER;
-  } else if (ata_identify(ATA_PRIMARY_IO, ATA_DEV_SLAVE, dev)) {
+  }
+  else if(ata_identify(ATA_PRIMARY_IO, ATA_DEV_SLAVE, dev))
+  {
     dev->base = ATA_PRIMARY_IO;
     dev->ctrl = ATA_PRIMARY_CTRL;
     dev->slave = ATA_DEV_SLAVE;
-  } else if (ata_identify(ATA_SECONDARY_IO, ATA_DEV_MASTER, dev)) {
+  }
+  else if(ata_identify(ATA_SECONDARY_IO, ATA_DEV_MASTER, dev))
+  {
     dev->base = ATA_SECONDARY_IO;
     dev->ctrl = ATA_SECONDARY_CTRL;
     dev->slave = ATA_DEV_MASTER;
-  } else if (ata_identify(ATA_SECONDARY_IO, ATA_DEV_SLAVE, dev)) {
+  }
+  else if(ata_identify(ATA_SECONDARY_IO, ATA_DEV_SLAVE, dev))
+  {
     dev->base = ATA_SECONDARY_IO;
     dev->ctrl = ATA_SECONDARY_CTRL;
     dev->slave = ATA_DEV_SLAVE;
-  } else {
+  }
+  else
+  {
 
     dev->type = 0xFF;
   }

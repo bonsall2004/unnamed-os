@@ -4,6 +4,7 @@
  * Description: 
  */
 #pragma once
+
 namespace std
 {
   class thread

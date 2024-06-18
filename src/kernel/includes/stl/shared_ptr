@@ -1,0 +1,105 @@
+/*
+ * custom_os
+ * Author: bonsall2004
+ * Description: 
+ */
+#pragma once
+#include <utility>
+#include <cstddef>
+
+namespace std
+{
+  template <typename T>
+  class shared_ptr
+  {
+    public:
+      explicit shared_ptr(T* ptr = nullptr) : ptr_(ptr), ref_count(new size_t(1))
+      {
+      }
+
+      shared_ptr(const shared_ptr& other) noexcept : ptr_(other.ptr_), ref_count(other.ref_count)
+      {
+        ++(*ref_count);
+      }
+
+      shared_ptr& operator=(const shared_ptr& other) noexcept
+      {
+        if(this != &other)
+        {
+          release();
+          ptr_ = other.ptr_;
+          ref_count = other.ref_count;
+          ++(*ref_count);
+        }
+        return *this;
+      }
+
+      shared_ptr(shared_ptr&& other) noexcept : ptr_(other.ptr_), ref_count(other.ref_count)
+      {
+        other.ptr_ = nullptr;
+        other.ref_count = nullptr;
+      }
+
+      shared_ptr& operator=(shared_ptr&& other) noexcept
+      {
+        if(this != &other)
+        {
+          release();
+          ptr_ = other.ptr_;
+          ref_count = other.ref_count;
+          other.ptr_ = nullptr;
+          other.ref_count = nullptr;
+        }
+        return *this;
+      }
+
+      ~shared_ptr()
+      {
+        release();
+      }
+
+      T* get() const noexcept
+      {
+        return ptr_;
+      }
+
+      T& operator*() const noexcept
+      {
+        return *ptr_;
+      }
+
+      T* operator->() const noexcept
+      {
+        return ptr_;
+      }
+
+      explicit operator bool() const noexcept
+      {
+        return ptr_ != nullptr;
+      }
+
+      size_t use_count() const noexcept
+      {
+        return *ref_count;
+      }
+
+    private:
+      void release()
+      {
+        if(ref_count && --(*ref_count) == 0)
+        {
+          delete ptr_;
+          delete ref_count;
+        }
+      }
+
+      T* ptr_;
+      size_t* ref_count;
+  };
+
+  template <typename T, typename... Args>
+  shared_ptr<T> make_shared(Args&& ... args)
+  {
+    return shared_ptr<T>(new T(std::forward<Args>(args)...));
+  }
+}

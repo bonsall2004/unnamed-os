@@ -1,0 +1,41 @@
+/*
+ * custom_os
+ * Author: bonsall2004
+ * Description: 
+ */
+#pragma once
+
+namespace std
+{
+  // std::remove_reference
+  template <typename T>
+  struct remove_reference
+  {
+    typedef T type;
+  };
+
+  template <typename T>
+  struct remove_reference<T&>
+  {
+    typedef T type;
+  };
+
+  template <typename T>
+  struct remove_reference<T&&>
+  {
+    typedef T type;
+  };
+
+  // std::is_lvalue_reference
+  template <typename T>
+  struct is_lvalue_reference
+  {
+    static constexpr bool value = false;
+  };
+
+  template <typename T>
+  struct is_lvalue_reference<T&>
+  {
+    static constexpr bool value = true;
+  };
+}
