@@ -3,6 +3,7 @@
 
 namespace std
 {
+  using nullptr_t = decltype(nullptr);
   // std::move
   template <typename T>
   typename remove_reference<T>::type&& move(T&& t) noexcept

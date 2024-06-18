@@ -5,6 +5,7 @@
  */
 #pragma once
 #include <utility>
+#include <memory>
 
 namespace std
 {
@@ -32,7 +33,6 @@ namespace std
       ~unique_ptr()
       {
         if(ptr_ == nullptr) return;
-        delete ptr_;
       }
 
       T* get() const noexcept

@@ -1,0 +1,58 @@
+/*
+ * custom_os
+ * Author: bonsall2004
+ * Description: 
+ */
+#pragma once
+#include <unique_ptr>
+
+namespace std
+{
+  template <typename R, typename ...Args>
+  class function;
+
+  template <typename R, typename ...Args>
+  class function<R(Args...)>
+  {
+    using FuncType = R(*)(Args...);
+    public:
+      function() noexcept = default;
+      function(FuncType callback)
+      {
+        if(callback != nullptr)
+        {
+          _callback = make_unique<FuncType>(std::move(callback));
+        }
+      }
+
+      function(unique_ptr<FuncType> callback)
+      {
+        _callback = make_unique<FuncType>(callback.release());
+      }
+
+      R operator()(Args... args)
+      {
+        return (*_callback)(args...);
+      }
+
+      function& operator=(FuncType callback)
+      {
+        if(callback != nullptr)
+        {
+          _callback = make_unique<FuncType>(std::move(callback));
+        }
+        return *this;
+      }
+
+      function& operator=(unique_ptr<FuncType> callback)
+      {
+        if(callback)
+        {
+          _callback = make_unique<FuncType>(callback.release());
+        }
+      }
+
+    private:
+      unique_ptr<FuncType> _callback;
+  };
+}
