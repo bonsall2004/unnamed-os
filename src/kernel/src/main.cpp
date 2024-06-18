@@ -3,6 +3,7 @@
 #include <memory>
 #include <k_entry.h>
 #include <idt.h>
+#include <pair>
 #include <vector>
 #include <scheduling/TaskScheduler.h>
 
@@ -26,9 +27,10 @@ void kernel_main()
   test1.push_back(new uint8_t(0));
   test1.push_back(new uint8_t(255));
   test1.push_back(new uint8_t(255));
+  std::pair<uint8_t, uint8_t> testpair(255, 10);
 
   auto* test = (color_t*)malloc(sizeof(color_t));
-  *test = RGB(*test1[0], *test1[1], *test1[2], *test1[3]);
+  *test = RGB(*test1[0], *test1[1], testpair.second, testpair.second);
 
   fill_frame_buffer(*test);
   free(test);

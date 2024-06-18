@@ -1,27 +1,26 @@
-#include <cstdint>
-#include <cstddef>
-
+#pragma once
+#include <utility>
 
 namespace std{
 
 template <typename T1, typename T2>
-class Pair {
+class pair {
 public:
-    constexpr Pair() noexcept : first(), second() {}
+    constexpr pair() noexcept : first(), second() {}
 
-    constexpr Pair(const T1& firstValue, const T2& secondValue) 
+    constexpr pair(const T1& firstValue, const T2& secondValue) 
         : first(firstValue), second(secondValue) {}
 
-    constexpr Pair(T1&& firstValue, T2&& secondValue) noexcept
+    constexpr pair(T1&& firstValue, T2&& secondValue) noexcept
         : first(std::move(firstValue)), second(std::move(secondValue)) {}
 
-    constexpr Pair(const Pair& other) 
+    constexpr pair(const pair& other) 
         : first(other.first), second(other.second) {}
 
-    constexpr Pair(Pair&& other) noexcept 
+    constexpr pair(pair&& other) noexcept 
         : first(std::move(other.first)), second(std::move(other.second)) {}
 
-    Pair& operator=(const Pair& other) {
+    pair& operator=(const pair& other) {
         if (this != &other) {
             first = other.first;
             second = other.second;
@@ -29,7 +28,7 @@ public:
         return *this;
     }
 
-    Pair& operator=(Pair&& other) noexcept {
+    pair& operator=(pair&& other) noexcept {
         if (this != &other) {
             first = std::move(other.first);
             second = std::move(other.second);
@@ -37,7 +36,7 @@ public:
         return *this;
     }
 
-    ~Pair() = default;
+    ~pair() = default;
 
     T1 first;
     T2 second;
