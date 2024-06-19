@@ -9,6 +9,7 @@
 #include <scheduling/TaskScheduler.h>
 #include <srand>
 #include <unique_ptr>
+#include <atomic>
 #include "shared_ptr"
 
 void kernel_main();
@@ -21,7 +22,10 @@ void _start()
 }
 }
 
-int testf(int a, int b) { return a+b; }
+int testf(int a, int b)
+{
+  return a + b;
+}
 
 void kernel_main()
 {
@@ -31,14 +35,27 @@ void kernel_main()
   std::srand(100);
   auto* test = (color_t*)malloc(sizeof(color_t));
   std::function<int(int, int)> testFunc = testf;
-  testFunc = [](int a, int b){ return a - b; };
-  *test = RGB(0, 0, testFunc(100, 155),std::rand(1, 255));
+  testFunc = [](int a, int b)
+  { return a - b; };
+  *test = RGB(0, 0, testFunc(100, 155), std::rand(1, 255));
+  std::atomic<bool> testAtomic(true);
 
-
-  int(*test1)(int, int) = [](int a, int b) {return a + b;};
-
+  int (* test1)(int, int) = [](int a, int b)
+  { return a + b; };
 
   fill_frame_buffer(*test);
+  if(testAtomic.load())
+  {
+    printf("PP");
+
+  }
+
+  testAtomic.store(true);
+  if(testAtomic.load())
+  {
+    printf("PP");
+  }
+
   free(test);
   printf("Pointer: %p", test);
 

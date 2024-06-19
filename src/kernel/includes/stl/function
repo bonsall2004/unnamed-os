@@ -14,7 +14,7 @@ namespace std
   template <typename R, typename ...Args>
   class function<R(Args...)>
   {
-    using FuncType = R(*)(Args...);
+      using FuncType = R(*)(Args...);
     public:
       function() noexcept = default;
       function(FuncType callback)

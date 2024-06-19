@@ -11,12 +11,16 @@ struct InterruptDescriptor64
 {
   uint16_t offset_1;        // offset bits 0..15
   uint16_t selector;        // a code segment selector in GDT or LDT
-  uint8_t ist;             // bits 0..2 holds Interrupt Stack Table offset, rest of bits zero.
-  uint8_t type_attributes; // gate type, dpl, and p fields
+  uint8_t ist;              // bits 0..2 holds Interrupt Stack Table offset, rest of bits zero.
+  uint8_t type_attributes;  // gate type, dpl, and p fields
   uint16_t offset_2;        // offset bits 16..31
   uint32_t offset_3;        // offset bits 32..63
   uint32_t zero;            // reserved
 };
+
+//std::unordered_map<uint16_t, std::function<void(void*)>> software_defined_interrupts;
+
+
 
 struct idtr
 {
@@ -43,6 +47,7 @@ void load_idt()
   idtr.limit = sizeof(idt) - 1;
   idtr.base = (uintptr_t)&idt;
   __asm__ volatile ("lidt %0" : : "m"(idtr));
+
 }
 
 [[noreturn]] __attribute__ ((no_caller_saved_registers))
@@ -217,6 +222,12 @@ void isr_out_of_range_exception(interrupt_frame* frame)
   handle_exception("Out Of Range", frame);
 }
 
+__attribute__ ((interrupt))
+void isr_software_defined_exception_handler(interrupt_frame* frame)
+{
+  handle_exception("Out Of Range", frame);
+}
+
 void init_idt()
 {
   set_idt_entry(0, isr_division_error, 40, 0x8E);
@@ -247,8 +258,10 @@ void init_idt()
   // Task scheduler Interrupt
   set_idt_entry(45, scheduler_interrupt, 40, 0x8E);
 
+  set_idt_entry(127, isr_software_defined_exception_handler, 40, 0x8E);
   set_idt_entry(128, isr_software_interrupt, 40, 0x8E);
 
   load_idt();
   __asm__ volatile("sti");
 }
+

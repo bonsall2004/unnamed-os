@@ -4,6 +4,8 @@
  * Description: 
  */
 #pragma once
+#include <unordered_map>
+#include <function>
 
 struct interrupt_frame
 {
@@ -18,3 +20,4 @@ struct interrupt_frame
 extern "C" void scheduler_interrupt(interrupt_frame* frame);
 void init_idt();
 
+extern std::unordered_map<uint16_t, std::function<void(void*)>> software_defined_interrupts;

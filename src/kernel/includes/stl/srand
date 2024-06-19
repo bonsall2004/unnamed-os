@@ -24,7 +24,7 @@ namespace std
 
       static int rand(int min, int max)
       {
-        if (min > max)
+        if(min > max)
         {
           return 0;
         }
