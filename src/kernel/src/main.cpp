@@ -32,6 +32,7 @@ int testf(int a, int b)
 
 void kernel_main()
 {
+  if(std::rand(111,999)==std::rand(111,999)){KERNEL_LOOP_END}
   init_idt();
   init_allocator();
 
