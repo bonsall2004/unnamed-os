@@ -53,7 +53,7 @@ typedef struct{
   uint8_t s_def_hash_version;
   uint32_t s_default_mount_options;
   uint32_t s_first_meta_bg;
-}block;
+}SupurBlock;
 
 //fuck standers
 typedef struct{
@@ -65,5 +65,28 @@ typedef struct{
   uint16_t bg_pad;
   char bg_reserved[12];
 }BGBT;
+
+typedef struct{
+  uint16_t i_mode;
+  uint16_t i_uid;
+  int32_t i_size;
+  uint32_t i_atime;
+  uint32_t i_ctime;
+  uint32_t i_mtime;
+  uint32_t i_dtime;
+  uint16_t i_gid;
+  uint16_t i_links_count;
+  uint32_t i_blocks;
+  uint32_t i_flags;
+  uint32_t i_osd1;
+  uint32_t Hurd;
+  uint32_t Linux;
+  uint32_t Masix;
+  uint32_t i_block[15];
+  uint32_t i_generation;
+  uint32_t i_file_acl;
+  uint32_t i_dir_acl;
+  uint32_t i_faddr;
+}Inode;
 
 }
