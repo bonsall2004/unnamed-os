@@ -20,4 +20,19 @@ struct interrupt_frame
 extern "C" void scheduler_interrupt(interrupt_frame* frame);
 void init_idt();
 
-extern std::unordered_map<uint16_t, std::function<void(void*)>> software_defined_interrupts;
+extern std::unordered_map<uint16_t, const char*> software_defined_interrupts;
+
+#define UNIQUE_NAME(base) CONCAT(base, __LINE__)
+#define CONCAT(base, line) base##line
+
+#define REGISTER_KERNEL_PANIK(num, msg)
+namespace {
+    struct UNIQUE_NAME(KernelPanikHandler)
+    {
+        UNIQUE_NAME(KernelPanikHandler)(uint16_t n, const char* m)
+        {
+            software_defined_interrupts.insert(n, m);
+        }
+    };
+    static UNIQUE_NAME(KernelPanikHandler) UNIQUE_NAME(handler_instance)(num, msg);
+}

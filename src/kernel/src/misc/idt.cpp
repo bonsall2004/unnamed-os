@@ -18,9 +18,7 @@ struct InterruptDescriptor64
   uint32_t zero;            // reserved
 };
 
-//std::unordered_map<uint16_t, std::function<void(void*)>> software_defined_interrupts;
-
-
+std::unordered_map<uint16_t, const char*> software_defined_interrupts;
 
 struct idtr
 {
@@ -47,7 +45,6 @@ void load_idt()
   idtr.limit = sizeof(idt) - 1;
   idtr.base = (uintptr_t)&idt;
   __asm__ volatile ("lidt %0" : : "m"(idtr));
-
 }
 
 [[noreturn]] __attribute__ ((no_caller_saved_registers))
@@ -61,7 +58,6 @@ void handle_exception(const char* message, interrupt_frame* frame, bool clear_sc
   printf("Interrupt: %s", message);
   printf("Current Instruction Ptr: %p", frame->rip);
   printf("Stack Ptr: %p", frame->rsp);
-
   while(true)
   {};
 }
@@ -181,12 +177,6 @@ void isr_security_exception(interrupt_frame* frame)
 }
 
 __attribute__ ((interrupt))
-void isr_fpu_error_interrupt(interrupt_frame* frame)
-{
-  handle_exception("FPU Error Interrupt", frame);
-}
-
-__attribute__ ((interrupt))
 void isr_virtualization_exception(interrupt_frame* frame)
 {
   handle_exception("Virtualization Exception", frame);
@@ -264,4 +254,3 @@ void init_idt()
   load_idt();
   __asm__ volatile("sti");
 }
-

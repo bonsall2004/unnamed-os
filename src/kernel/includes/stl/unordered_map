@@ -4,8 +4,9 @@
  * Description: 
  */
 #pragma once
-#include <pair>
+#include <utility>
 #include <vector>
+#include <pair>
 
 namespace std
 {
@@ -18,9 +19,8 @@ namespace std
         pair<const Key, Value> data;
         Node* next;
 
-        Node(const pair<const Key, Value>& d) : data(d), next(nullptr)
-        {
-        }
+        Node(const pair<const Key, Value>& d) : data(d), next(nullptr) {}
+        Node(const Key& key, const Value& value) : data(make_pair(key, value)), next(nullptr) {}
       };
 
       vector<Node*> buckets;
@@ -28,7 +28,6 @@ namespace std
 
       static const size_t default_bucket_count = 10;
 
-      // A simple hash function
       size_t hash(const Key& key) const
       {
         size_t hash_value = 0;
@@ -101,7 +100,7 @@ namespace std
           index = get_bucket_index(key);
         }
 
-        Node* new_node = new Node(make_pair(key, Value()));
+        Node* new_node = new Node(key, Value());
         new_node->next = buckets[index];
         buckets[index] = new_node;
         ++num_elements;
@@ -121,6 +120,32 @@ namespace std
           node = node->next;
         }
         return false;
+      }
+
+      void insert(const Key& key, const Value& value)
+      {
+        size_t index = get_bucket_index(key);
+        Node* node = buckets[index];
+        while(node)
+        {
+          if(node->data.first == key)
+          {
+            node->data.second = value;
+            return;
+          }
+          node = node->next;
+        }
+
+        if(num_elements > buckets.size() * 0.75)
+        {
+          rehash();
+          index = get_bucket_index(key);
+        }
+
+        Node* new_node = new Node(key, value);
+        new_node->next = buckets[index];
+        buckets[index] = new_node;
+        ++num_elements;
       }
 
       void erase(const Key& key)
@@ -150,5 +175,4 @@ namespace std
         }
       }
   };
-
 }

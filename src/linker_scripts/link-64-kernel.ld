@@ -25,6 +25,12 @@ SECTIONS
         *(.rodata .rodata.*)
     } :rodata
 
+    .init_array : {
+        __init_array = .;
+        *(.init_array .init_array.*)
+        __init_array_end = .;
+    } :rodata
+
     . = ALIGN(CONSTANT(MAXPAGESIZE));
 
     .data : {

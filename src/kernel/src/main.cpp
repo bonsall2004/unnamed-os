@@ -12,6 +12,9 @@
 #include <atomic>
 #include "shared_ptr"
 
+extern void (*__init_array[])();
+extern void (*__init_array_end[])();
+
 void kernel_main();
 
 extern "C" {
@@ -31,6 +34,11 @@ void kernel_main()
 {
   init_idt();
   init_allocator();
+
+  for (size_t i = 0; &__init_array[i] != __init_array_end; i++) {
+    __init_array[i]();
+  }
+
   init_task_scheduler();
   std::srand(100);
   auto* test = (color_t*)malloc(sizeof(color_t));
