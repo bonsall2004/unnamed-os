@@ -37,7 +37,7 @@ typedef struct{
   uint32_t s_feature_compat;
   uint32_t s_feature_incompat;
   uint32_t s_feature_ro_compat;
-  char[16] s_uuid;
+  char s_uuid[16];
   uint16_t s_volume_name;
   uint64_t s_last_mounted;
   uint32_t s_algo_bitmap;
@@ -47,8 +47,8 @@ typedef struct{
   uint32_t s_journal_inum;
   uint32_t s_journal_dev;
   uint32_t s_last_orphan;
-  uint32_t[4] s_hash_seed;
+  uint32_t s_hash_seed[4];
   uint8_t s_def_hash_version;
   uint32_t s_default_mount_options;
-  uint33_t s_first_meta_bg;
+  uint32_t s_first_meta_bg;
 }block;
