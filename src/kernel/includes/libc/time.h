@@ -6,3 +6,4 @@
 #pragma once
 
 typedef signed long long int time_t;
+typedef int32_t unixT_t;
