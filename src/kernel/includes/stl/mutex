@@ -1,0 +1,32 @@
+// olivia 
+// 23:16 
+
+#pragma once
+#include <cstdint>
+#include <atomic>
+
+namespace stl {
+  class Mutex {
+  public:
+    Mutex() : flag(false) {}
+
+    void lock() {
+      while (flag.exchange(true)) {
+        // Busy-wait until the flag is cleared
+      }
+    }
+
+    void unlock() {
+      flag.store(false);
+    }
+
+    bool try_lock() {
+      return !flag.exchange(true);
+    }
+
+    ~Mutex() = default;
+
+  private:
+    std::Atomic<bool> flag;
+  };
+}
