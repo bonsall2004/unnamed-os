@@ -7,7 +7,7 @@
 #define MAX_FILES 1024
 #define MAX_BLOCKS 8192
 #define BLOCK_SIZE 4096
-
+export c{
 typedef struct {
   uint32_t total_inodes;
   uint32_t total_blocks;
@@ -44,3 +44,4 @@ typedef struct {
   Directory root_directory;
   uint8_t data_blocks[MAX_BLOCKS][BLOCK_SIZE];
 } FileSystem;
+}
