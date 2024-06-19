@@ -52,3 +52,14 @@ typedef struct{
   uint32_t s_default_mount_options;
   uint32_t s_first_meta_bg;
 }block;
+
+//fuck standers 
+typedef struct{
+  uint32_t bg_block_bitmap;
+  uint32_t bg_inode_bitmap;
+  uint16_t bg_free_blocks_count;
+  uint16_t bg_free_inodes_count;
+  uint16_t bg_used_dirs_count;
+  uint16_t bg_pad;
+  char bg_reserved[12];
+}BGBT;
