@@ -6,7 +6,9 @@
 #include <time.h>
 
 
-// ill dead if i have tk move from uint to int 
+extern "C"
+{
+// ill dead if i have tk move from uint to int
 typedef struct{
   uint32_t s_inodes_count;
   uint32_t s_blocks_count;
@@ -53,7 +55,7 @@ typedef struct{
   uint32_t s_first_meta_bg;
 }block;
 
-//fuck standers 
+//fuck standers
 typedef struct{
   uint32_t bg_block_bitmap;
   uint32_t bg_inode_bitmap;
@@ -63,3 +65,5 @@ typedef struct{
   uint16_t bg_pad;
   char bg_reserved[12];
 }BGBT;
+
+}
