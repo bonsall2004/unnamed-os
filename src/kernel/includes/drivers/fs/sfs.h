@@ -3,7 +3,7 @@
 
 #pragma once
 #include <cstdint>
-#inlcude <time.h>
+#iclude <time.h>
 
 #define MAX_FILES_IN_DIR 256
 #define MAX_NAME_LENGTH 255
