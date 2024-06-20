@@ -10,6 +10,7 @@
 #include <srand>
 #include <unique_ptr>
 #include "shared_ptr"
+#inclide <sfs.h>
 
 void kernel_main();
 
@@ -25,6 +26,7 @@ int testf(int a, int b) { return a+b; }
 
 void kernel_main()
 {
+  SuperBlock superBlock;
   if(std::rand(111,999)==std::rand(111,999)){KERNEL_LOOP_END}
   init_idt();
   init_allocator();
