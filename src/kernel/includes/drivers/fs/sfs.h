@@ -31,4 +31,8 @@ typedef struct {
   uintptr_t blocker_point;
   int64_t size_of_index;
 } SuperBlock;
+
+void loadSuperBlock(const char* raw_data,size_t size_of_drive_in_biyts);
+
+
 }
