@@ -28,7 +28,7 @@ bool init_task_scheduler()
 
 void TaskQueue::add_task(ThreadControlBlock* tcb)
 {
-  tasks.push_back(tcb);
+//  tasks.push_back(std::move(tcb));
 }
 
 ThreadControlBlock* TaskQueue::get_current_task()

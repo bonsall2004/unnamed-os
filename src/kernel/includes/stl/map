@@ -1,0 +1,127 @@
+/*
+ * custom_os
+ * Author: bonsall2004
+ * Description: 
+ */
+#pragma once
+#include <pair>
+#include <memory>
+
+namespace std
+{
+  template<typename Key, typename Value>
+  struct Node {
+    pair<Key, Value> data;
+    Node* left;
+    Node* right;
+
+    Node(const Key& k, const Value& v) : data(k, v), left(nullptr), right(nullptr) {}
+  };
+
+  template<typename Key, typename Value>
+  class map {
+    private:
+      Node<Key, Value>* root;
+
+      // Helper function for recursive insertion
+      void insertUtil(Node<Key, Value>*& node, const Key& key, const Value& value) {
+        if (node == nullptr) {
+          node = static_cast<Node<Key, Value>*>(malloc(sizeof(Node<Key, Value>)));
+          new (node) Node<Key, Value>(key, value);
+        } else if (key < node->data.first) {
+          insertUtil(node->left, key, value);
+        } else if (key > node->data.first) {
+          insertUtil(node->right, key, value);
+        } else {
+          // Key already exists, update the value
+          node->data.second = value;
+        }
+      }
+
+      // Helper function to find the minimum node in a subtree
+      Node<Key, Value>* findMin(Node<Key, Value>* node) const {
+        while (node && node->left != nullptr) {
+          node = node->left;
+        }
+        return node;
+      }
+
+      // Helper function for recursive deletion
+      Node<Key, Value>* deleteUtil(Node<Key, Value>* node, const Key& key) {
+        if (node == nullptr) return node;
+
+        if (key < node->data.first) {
+          node->left = deleteUtil(node->left, key);
+        } else if (key > node->data.first) {
+          node->right = deleteUtil(node->right, key);
+        } else {
+          // Found the node to delete
+          if (node->left == nullptr && node->right == nullptr) {
+            free(node);
+            return nullptr;
+          } else if (node->left == nullptr) {
+            Node<Key, Value>* temp = node->right;
+            free(node);
+            return temp;
+          } else if (node->right == nullptr) {
+            Node<Key, Value>* temp = node->left;
+            free(node);
+            return temp;
+          }
+
+          // Node has two children
+          Node<Key, Value>* temp = findMin(node->right);
+          node->data = temp->data;
+          node->right = deleteUtil(node->right, temp->data.first);
+        }
+        return node;
+      }
+
+      // Helper function for recursive search
+      Value* searchUtil(Node<Key, Value>* node, const Key& key) const {
+        if (node == nullptr) return nullptr;
+
+        if (key < node->data.first) {
+          return searchUtil(node->left, key);
+        } else if (key > node->data.first) {
+          return searchUtil(node->right, key);
+        } else {
+          return &(node->data.second);
+        }
+      }
+
+      // Helper function for recursive destruction of tree
+      void destroyTree(Node<Key, Value>* node) {
+        if (node != nullptr) {
+          destroyTree(node->left);
+          destroyTree(node->right);
+          free(node);
+        }
+      }
+
+    public:
+      // Constructor
+      map() : root(nullptr) {}
+
+      // Destructor
+      ~map() {
+        destroyTree(root);
+      }
+
+      // Insert a key-value pair into the map
+      void insert(const Key& key, const Value& value) {
+        insertUtil(root, key, value);
+      }
+
+      // Remove a key-value pair from the map
+      void erase(const Key& key) {
+        root = deleteUtil(root, key);
+      }
+
+      // Find the value associated with a given key
+      Value* find(const Key& key) const {
+        return searchUtil(root, key);
+      }
+  };
+
+}

@@ -4,175 +4,175 @@
  * Description: 
  */
 #pragma once
-#include <utility>
-#include <vector>
-#include <pair>
-
-namespace std
-{
-  template <typename Key, typename Value>
-  class unordered_map
-  {
-    private:
-      struct Node
-      {
-        pair<const Key, Value> data;
-        Node* next;
-
-        Node(const pair<const Key, Value>& d) : data(d), next(nullptr) {}
-        Node(const Key& key, const Value& value) : data(make_pair(key, value)), next(nullptr) {}
-      };
-
-      vector<Node*> buckets;
-      size_t num_elements;
-
-      static const size_t default_bucket_count = 10;
-
-      size_t hash(const Key& key) const
-      {
-        size_t hash_value = 0;
-        const char* ptr = reinterpret_cast<const char*>(&key);
-        for(size_t i = 0; i < sizeof(Key); ++i)
-        {
-          hash_value = hash_value * 31 + ptr[i];
-        }
-        return hash_value;
-      }
-
-      size_t get_bucket_index(const Key& key) const
-      {
-        return hash(key) % buckets.size();
-      }
-
-      void rehash()
-      {
-        vector<Node*> new_buckets(buckets.size() * 2, nullptr);
-
-        for(size_t i = 0; i < buckets.size(); ++i)
-        {
-          Node* node = buckets[i];
-          while(node)
-          {
-            Node* next = node->next;
-            size_t new_index = hash(node->data.first) % new_buckets.size();
-            node->next = new_buckets[new_index];
-            new_buckets[new_index] = node;
-            node = next;
-          }
-        }
-
-        buckets.swap(new_buckets);
-      }
-
-    public:
-      unordered_map() : buckets(default_bucket_count, nullptr), num_elements(0) {}
-
-      ~unordered_map()
-      {
-        for(size_t i = 0; i < buckets.size(); ++i)
-        {
-          Node* node = buckets[i];
-          while(node)
-          {
-            Node* next = node->next;
-            delete node;
-            node = next;
-          }
-        }
-      }
-
-      Value& operator[](const Key& key)
-      {
-        size_t index = get_bucket_index(key);
-        Node* node = buckets[index];
-        while(node)
-        {
-          if(node->data.first == key)
-          {
-            return node->data.second;
-          }
-          node = node->next;
-        }
-
-        if(num_elements > buckets.size() * 0.75)
-        {
-          rehash();
-          index = get_bucket_index(key);
-        }
-
-        Node* new_node = new Node(key, Value());
-        new_node->next = buckets[index];
-        buckets[index] = new_node;
-        ++num_elements;
-        return new_node->data.second;
-      }
-
-      bool find(const Key& key) const
-      {
-        size_t index = get_bucket_index(key);
-        Node* node = buckets[index];
-        while(node)
-        {
-          if(node->data.first == key)
-          {
-            return true;
-          }
-          node = node->next;
-        }
-        return false;
-      }
-
-      void insert(const Key& key, const Value& value)
-      {
-        size_t index = get_bucket_index(key);
-        Node* node = buckets[index];
-        while(node)
-        {
-          if(node->data.first == key)
-          {
-            node->data.second = value;
-            return;
-          }
-          node = node->next;
-        }
-
-        if(num_elements > buckets.size() * 0.75)
-        {
-          rehash();
-          index = get_bucket_index(key);
-        }
-
-        Node* new_node = new Node(key, value);
-        new_node->next = buckets[index];
-        buckets[index] = new_node;
-        ++num_elements;
-      }
-
-      void erase(const Key& key)
-      {
-        size_t index = get_bucket_index(key);
-        Node* node = buckets[index];
-        Node* prev = nullptr;
-
-        while(node)
-        {
-          if(node->data.first == key)
-          {
-            if(prev)
-            {
-              prev->next = node->next;
-            }
-            else
-            {
-              buckets[index] = node->next;
-            }
-            delete node;
-            --num_elements;
-            return;
-          }
-          prev = node;
-          node = node->next;
-        }
-      }
-  };
-}
+//#include <utility>
+//#include <vector>
+//#include <pair>
+//
+//namespace std
+//{
+//  template <typename Key, typename Value>
+//  class unordered_map
+//  {
+//    private:
+//      struct Node
+//      {
+//        pair<const Key, Value> data;
+//        Node* next;
+//
+//        Node(const pair<const Key, Value>& d) : data(d), next(nullptr) {}
+//        Node(const Key& key, const Value& value) : data(make_pair(key, value)), next(nullptr) {}
+//      };
+//
+//      vector<Node*> buckets;
+//      size_t num_elements;
+//
+//      static const size_t default_bucket_count = 10;
+//
+//      size_t hash(const Key& key) const
+//      {
+//        size_t hash_value = 0;
+//        const char* ptr = reinterpret_cast<const char*>(&key);
+//        for(size_t i = 0; i < sizeof(Key); ++i)
+//        {
+//          hash_value = hash_value * 31 + ptr[i];
+//        }
+//        return hash_value;
+//      }
+//
+//      size_t get_bucket_index(const Key& key) const
+//      {
+//        return hash(key) % buckets.size();
+//      }
+//
+//      void rehash()
+//      {
+//        vector<Node*> new_buckets(buckets.size() * 2, nullptr);
+//
+//        for(size_t i = 0; i < buckets.size(); ++i)
+//        {
+//          Node* node = buckets[i];
+//          while(node)
+//          {
+//            Node* next = node->next;
+//            size_t new_index = hash(node->data.first) % new_buckets.size();
+//            node->next = new_buckets[new_index];
+//            new_buckets[new_index] = node;
+//            node = next;
+//          }
+//        }
+//
+//        buckets.swap(new_buckets);
+//      }
+//
+//    public:
+//      unordered_map() : buckets(default_bucket_count, nullptr), num_elements(0) {}
+//
+//      ~unordered_map()
+//      {
+//        for(size_t i = 0; i < buckets.size(); ++i)
+//        {
+//          Node* node = buckets[i];
+//          while(node)
+//          {
+//            Node* next = node->next;
+//            delete node;
+//            node = next;
+//          }
+//        }
+//      }
+//
+//      Value& operator[](const Key& key)
+//      {
+//        size_t index = get_bucket_index(key);
+//        Node* node = buckets[index];
+//        while(node)
+//        {
+//          if(node->data.first == key)
+//          {
+//            return node->data.second;
+//          }
+//          node = node->next;
+//        }
+//
+//        if(num_elements > buckets.size() * 0.75)
+//        {
+//          rehash();
+//          index = get_bucket_index(key);
+//        }
+//
+//        Node* new_node = new Node(key, Value());
+//        new_node->next = buckets[index];
+//        buckets[index] = new_node;
+//        ++num_elements;
+//        return new_node->data.second;
+//      }
+//
+//      bool find(const Key& key) const
+//      {
+//        size_t index = get_bucket_index(key);
+//        Node* node = buckets[index];
+//        while(node)
+//        {
+//          if(node->data.first == key)
+//          {
+//            return true;
+//          }
+//          node = node->next;
+//        }
+//        return false;
+//      }
+//
+//      void insert(const Key& key, const Value& value)
+//      {
+//        size_t index = get_bucket_index(key);
+//        Node* node = buckets[index];
+//        while(node)
+//        {
+//          if(node->data.first == key)
+//          {
+//            node->data.second = value;
+//            return;
+//          }
+//          node = node->next;
+//        }
+//
+//        if(num_elements > buckets.size() * 0.75)
+//        {
+//          rehash();
+//          index = get_bucket_index(key);
+//        }
+//
+//        Node* new_node = new Node(key, value);
+//        new_node->next = buckets[index];
+//        buckets[index] = new_node;
+//        ++num_elements;
+//      }
+//
+//      void erase(const Key& key)
+//      {
+//        size_t index = get_bucket_index(key);
+//        Node* node = buckets[index];
+//        Node* prev = nullptr;
+//
+//        while(node)
+//        {
+//          if(node->data.first == key)
+//          {
+//            if(prev)
+//            {
+//              prev->next = node->next;
+//            }
+//            else
+//            {
+//              buckets[index] = node->next;
+//            }
+//            delete node;
+//            --num_elements;
+//            return;
+//          }
+//          prev = node;
+//          node = node->next;
+//        }
+//      }
+//  };
+//}

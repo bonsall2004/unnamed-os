@@ -18,7 +18,7 @@ struct InterruptDescriptor64
   uint32_t zero;            // reserved
 };
 
-std::unordered_map<uint16_t, const char*> software_defined_interrupts;
+//std::map<uint16_t, const char*> software_defined_interrupts;
 
 struct idtr
 {

@@ -6,6 +6,7 @@
 #pragma once
 #include <cstddef>
 #include <memory> // for malloc and free
+#include <utility>
 
 namespace std
 {
@@ -42,7 +43,7 @@ namespace std
         data[index].~T();
         for(size_t i = index; i < _size - 1; i++)
         {
-          new (&data[i]) T(std::move(data[i + 1])); // Placement new with move
+          new (&data[i]) T(move(data[i + 1])); // Placement new with move
           data[i + 1].~T();
         }
         _size--;
