@@ -10,7 +10,7 @@
 #include <srand>
 #include <unique_ptr>
 #include "shared_ptr"
-#inclide <sf/sfs.h>
+#include <sfs.h>
 
 void kernel_main();
 
