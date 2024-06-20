@@ -3,7 +3,9 @@
 #include <disk.h>
 
 
-
+void getPartishonTable(){
+  
+}
 
 
 
