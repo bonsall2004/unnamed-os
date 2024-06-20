@@ -8,7 +8,7 @@
 #define MAX_FILES_IN_DIR 256
 #define MAX_NAME_LENGTH 255
 
-
+extern "C" {
 typedef struct {
   uintptr_t point_in_dataBlock_to_start;
   int64_t size;
@@ -31,3 +31,4 @@ typedef struct {
   uintptr_t blocker_point;
   int64_t size_of_index;
 } SuperBlock;
+}
