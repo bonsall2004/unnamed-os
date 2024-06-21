@@ -105,9 +105,109 @@ uint64_t find_partition_with_guid(struct ata_device* device, const uint8_t* targ
   return offset;
 }
 
+uint64_t find_partition_start_lba(struct ata_device* device, const uint8_t* partition_guid) {
+  uint8_t buffer[SECTOR_SIZE];
 
-SuperBlock loadSuperBlock(struct ata_device)
+  if (!ata_read_sector(device, GPT_HEADER_LBA, buffer)) {
+    printf("Error reading GPT header\n");
+    return 0;
+  }
+
+  GPTHeader* gpt_header = (GPTHeader*)buffer;
+
+  if (gpt_header->signature != GPT_SIGNATURE) {
+    printf("Invalid GPT signature\n");
+    return 0;
+  }
+
+  uint32_t num_entries = gpt_header->num_partition_entries;
+  uint32_t entry_size = gpt_header->partition_entry_size;
+  uint64_t entry_lba = gpt_header->partition_entry_lba;
+  uint32_t num_sectors = (num_entries * entry_size + SECTOR_SIZE - 1) / SECTOR_SIZE;
+
+  GPTPartitionEntry* entries = (GPTPartitionEntry*)malloc(num_sectors * SECTOR_SIZE);
+  if (!entries) {
+    printf("Memory allocation error\n");
+    return 0;
+  }
+
+  for (uint32_t i = 0; i < num_sectors; i++) {
+    if (!ata_read_sector(device, entry_lba + i, ((uint8_t*)entries) + i * SECTOR_SIZE)) {
+      printf("Error reading partition entries\n");
+      free(entries);
+      return 0;
+    }
+  }
+
+  uint64_t start_lba = 0;
+  for (uint32_t i = 0; i < num_entries; i++) {
+    GPTPartitionEntry* entry = (GPTPartitionEntry*)((uint8_t*)entries + i * entry_size);
+    if (memcmp(entry->unique_partition_guid, partition_guid, 16) == 0) {
+      start_lba = entry->first_lba;
+      break;
+    }
+  }
+
+  free(entries);
+  return start_lba;
+}
+
+uint64_t find_partition_last_lba(struct ata_device* device, const uint8_t* partition_guid) {
+  uint8_t buffer[SECTOR_SIZE];
+
+  if (!ata_read_sector(device, GPT_HEADER_LBA, buffer)) {
+    printf("Error reading GPT header\n");
+    return 0;
+  }
+
+  GPTHeader* gpt_header = (GPTHeader*)buffer;
+
+  if (gpt_header->signature != GPT_SIGNATURE) {
+    printf("Invalid GPT signature\n");
+    return 0;
+  }
+
+  uint32_t num_entries = gpt_header->num_partition_entries;
+  uint32_t entry_size = gpt_header->partition_entry_size;
+  uint64_t entry_lba = gpt_header->partition_entry_lba;
+  uint32_t num_sectors = (num_entries * entry_size + SECTOR_SIZE - 1) / SECTOR_SIZE;
+
+  GPTPartitionEntry* entries = (GPTPartitionEntry*)malloc(num_sectors * SECTOR_SIZE);
+  if (!entries) {
+    printf("Memory allocation error\n");
+    return 0;
+  }
+
+  for (uint32_t i = 0; i < num_sectors; i++) {
+    if (!ata_read_sector(device, entry_lba + i, ((uint8_t*)entries) + i * SECTOR_SIZE)) {
+      printf("Error reading partition entries\n");
+      free(entries);
+      return 0;
+    }
+  }
+
+  uint64_t last_lba = 0;
+  for (uint32_t i = 0; i < num_entries; i++) {
+    GPTPartitionEntry* entry = (GPTPartitionEntry*)((uint8_t*)entries + i * entry_size);
+    if (memcmp(entry->unique_partition_guid, partition_guid, 16) == 0) {
+      last_lba = entry->last_lba;
+      break;
+    }
+  }
+
+  free(entries);
+  return last_lba;
+}
+
+SuperBlock loadSuperBlock(struct ata_device *dev)
 {
+  SuperBlock block;
+  
+  block.start_off_set =find_partition_start_lba(&dev,0x6e);
+  block.last_off_set = find_partition_last_lba(&dev,0x6e);
+  
+
+  return block;
   
 }
   
