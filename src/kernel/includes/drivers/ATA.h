@@ -43,4 +43,8 @@ uint8_t inb(uint16_t port);
 void outw(uint16_t port, uint16_t val);
 uint16_t intw(uint16_t port);
 void io_wait(void);
+void ata_wait_busy(uint16_t base);
+void ata_wait_drq(uint16_t base);
+void ata_select_device(uint16_t base, uint8_t slave);
+int ata_identify(uint16_t base, uint8_t slave, struct ata_device* dev);
 void ata_initialize(struct ata_device* dev);
