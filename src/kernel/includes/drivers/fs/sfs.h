@@ -32,7 +32,7 @@ typedef struct {
   int64_t size_of_index;
 } SuperBlock;
 
-[[nodiscard]] SuperBlock loadSuperBlock(struct ata_device *dev, uint8_t *buffer);
-
+[[nodiscard]] SuperBlock* loadSuperBlock(struct ata_device *dev, uint8_t *buffer);
+[[nodiscard]] FileEntry* file_lookup(char name[255]);
 
 }
