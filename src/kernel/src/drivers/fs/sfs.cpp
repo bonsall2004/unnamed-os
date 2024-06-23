@@ -10,6 +10,7 @@ SuperBlock loadSuperBlock(struct ata_device *dev, uint8_t *buffer)
 {
     //fuck ya got the supper block
     SuperBlock block;
+    // uncomint when kernel panic is setup 
 // if(
     read_between_lbams(dev,
                        find_partition_start_lba(dev, 0x6e),
