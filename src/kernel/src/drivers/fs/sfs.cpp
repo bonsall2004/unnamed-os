@@ -10,12 +10,16 @@ SuperBlock loadSuperBlock(struct ata_device *dev, uint8_t *buffer)
 {
     //fuck ya got the supper block
     SuperBlock block;
-
+// if(
     read_between_lbams(dev,
                        find_partition_start_lba(dev, 0x6e),
                        find_partition_last_lba(dev, 0x6e),
-                       buffer);
-
+                       buffer)
+/* ){
+   asm("mov %rax, 0xA0");
+   asm("int 0x7F");
+}
+*/
     size_t offset = 0;
 
     memcpy(&block.num_block, buffer + offset, sizeof(block.num_block));
