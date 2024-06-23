@@ -10,6 +10,7 @@ set(C_SOURCES
     src/misc/font.cpp
     src/drivers/disk.cpp
     src/drivers/ATA.cpp
+    src/drivers/fs/sfs.cpp
     src/misc/idt.cpp
     src/kernel/scheduling/TaskScheduler.cpp
     )
@@ -20,6 +21,7 @@ set(ASM_SOURCES
 
 set(INCLUDE_DIRS
     includes/drivers
+    includes/drivers/fs
     includes/libc
     includes/stl
     includes/misc
