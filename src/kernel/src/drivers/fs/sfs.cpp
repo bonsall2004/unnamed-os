@@ -6,7 +6,7 @@
 export "C"{
 
 
-SuperBlock loadSuperBlock(struct ata_device *dev, uint8_t *buffer)
+[[nodiscard]] SuperBlock loadSuperBlock(struct ata_device *dev, uint8_t *buffer)
 {
     //fuck ya got the supper block
     SuperBlock block;
