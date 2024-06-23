@@ -5,11 +5,13 @@
 
 export "C"{
 
-
-[[nodiscard]] SuperBlock loadSuperBlock(struct ata_device *dev, uint8_t *buffer)
+[[nodiscard]] SuperBlock* loadSuperBlock(struct ata_device *dev, uint8_t *buffer)
 {
-    //fuck ya got the supper block
-    SuperBlock block;
+  //fuck ya got the supper block
+
+  auto* block = reinterpret_cast<SuperBlock*>(malloc(sizeof(SuperBlock)));
+
+
     // uncomint when kernel panic is setup 
 // if(
     read_between_lbams(dev,
@@ -21,26 +23,27 @@ export "C"{
    asm("int 0x7F");
 }
 */
-    size_t offset = 0;
 
-    memcpy(&block.num_block, buffer + offset, sizeof(block.num_block));
-    offset += sizeof(block.num_block);
+  size_t offset = 0;
 
-    memcpy(&block.num_inods, buffer + offset, sizeof(block.num_inods));
-    offset += sizeof(block.num_inods);
+  memcpy(&block->num_block, buffer + offset, sizeof(block->num_block));
+  offset += sizeof(block->num_block);
 
-    memcpy(&block.data_block_start, buffer + offset, sizeof(block.data_block_start));
-    offset += sizeof(block.data_block_start);
+  memcpy(&block->num_inods, buffer + offset, sizeof(block->num_inods));
+  offset += sizeof(block->num_inods);
 
-    memcpy(&block.data_block_size, buffer + offset, sizeof(block.data_block_size));
-    offset += sizeof(block.data_block_size);
+  memcpy(&block->data_block_start, buffer + offset, sizeof(block->data_block_start));
+  offset += sizeof(block->data_block_start);
 
-    memcpy(&block.blocker_point, buffer + offset, sizeof(block.blocker_point));
-    offset += sizeof(block.blocker_point);
+  memcpy(&block->data_block_size, buffer + offset, sizeof(block->data_block_size));
+  offset += sizeof(block->data_block_size);
 
-    memcpy(&block.size_of_index, buffer + offset, sizeof(block.size_of_index));
+  memcpy(&block->blocker_point, buffer + offset, sizeof(block->blocker_point));
+  offset += sizeof(block->blocker_point);
 
-    return block;
+  memcpy(&block->size_of_index, buffer + offset, sizeof(block->size_of_index));
+
+  return block;
 }
   
 }
